@@ -37,10 +37,10 @@ then
     done
 
     token=$(cat /tmp/vault.init | grep '^Initial' | awk '{print $4}')
-    export VAULT_TOKEN=$token
     putVKey root-token $token
 fi
 
+export VAULT_TOKEN=$token
 echo "Unsealing Vault"
 vault operator unseal $(getVKey unseal-key-1)
 vault operator unseal $(getVKey unseal-key-2)
