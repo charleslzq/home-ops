@@ -23,7 +23,7 @@ then
 fi
 
 echo "Abount to unseal vault"
-token=$(getVKey root-token) 
+token=$(getVKey token/vault-token) 
 
 if [ ! $token ]
 then
@@ -32,17 +32,16 @@ then
 
     COUNTER=1
     cat /tmp/vault.init | grep '^Unseal' | awk '{print $4}' | for key in $(cat -); do
-        putVKey unseal-key-$COUNTER $key
+        putVKey keys/unseal-key-$COUNTER $key
         COUNTER=$((COUNTER + 1))
     done
 
     token=$(cat /tmp/vault.init | grep '^Initial' | awk '{print $4}')
-    putVKey root-token $token
+    putVKey token/vault-token $token
 fi
 
-echo "Unsealing Vault"
-vault operator unseal $(getVKey unseal-key-1)
-vault operator unseal $(getVKey unseal-key-2)
-vault operator unseal $(getVKey unseal-key-3)
+vault operator unseal $(getVKey keys/unseal-key-1)
+vault operator unseal $(getVKey keys/unseal-key-2)
+vault operator unseal $(getVKey keys/unseal-key-3)
 
 echo "Vault setup complete."

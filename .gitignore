@@ -2,3 +2,4 @@ consul-backup/*
 !consul-backup/.gitkeep0
 
 .vagrant
+.terraform
