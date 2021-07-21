@@ -17,15 +17,15 @@ variable "LATEST_AWS_AMI_ID" {
   type = string
 }
 
-// resource "tls_private_key" "aws-2021" {
-//   algorithm = "RSA"
-//   rsa_bits  = 4096
-// }
+resource "tls_private_key" "aws-2021" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
-// resource "aws_key_pair" "aws-2021-key" {
-//   key_name   = "aws.2021"
-//   public_key = tls_private_key.aws-2021.public_key_openssh
-// }
+resource "aws_key_pair" "aws-2021-key" {
+  key_name   = "aws.2021"
+  public_key = tls_private_key.aws-2021.public_key_openssh
+}
 
 resource "aws_security_group" "default_group" {
   name = "default_security_group"
@@ -50,7 +50,7 @@ resource "aws_security_group" "default_group" {
 resource "aws_instance" "JohnSnow" {
   ami           = var.LATEST_AWS_AMI_ID
   instance_type = "t2.micro"
-//   key_name      = aws_key_pair.aws-2021-key.key_name
+  key_name      = aws_key_pair.aws-2021-key.key_name
   vpc_security_group_ids = [
     aws_security_group.default_group.id
   ]
