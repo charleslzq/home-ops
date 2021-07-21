@@ -1,0 +1,3 @@
+#!/bin/bash
+
+envconsul -config /etc/envconsul.d/envconsul.hcl -prefix vault-keys/token -prefix home/aliyun/env "$@"
