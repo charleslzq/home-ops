@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-    config.vm.box = "charleslzq/packer-consul-vault"
+    config.vm.box = "charleslzq/hashi-stack"
     config.vm.box_version = "1.0.0"
 
     config.vm.synced_folder "workspace/", "/home/vagrant/workspace", create: true, owner: "vagrant", group: "vagrant"
