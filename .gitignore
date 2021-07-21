@@ -3,3 +3,4 @@ consul-backup/*
 
 .vagrant
 .terraform
+*.zip
