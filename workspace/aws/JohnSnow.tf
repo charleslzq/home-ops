@@ -27,18 +27,6 @@ resource "aws_key_pair" "aws-2021-key" {
   public_key = tls_private_key.aws-2021.public_key_openssh
 }
 
-resource "vault_mount" "aws" {
-  type = "ssh"
-  path = "home/aws"
-}
-
-resource "vault_ssh_secret_backend_ca" "aws" {
-  backend              = vault_mount.aws.path
-  generate_signing_key = false
-  public_key           = tls_private_key.aws-2021.public_key_openssh
-  private_key          = tls_private_key.aws-2021.private_key_pem
-}
-
 resource "aws_security_group" "default_group" {
   name = "default_security_group"
   ingress {
