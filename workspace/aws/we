@@ -1,3 +1,3 @@
 #!/bin/bash
 
-envconsul -config /etc/envconsul.d/envconsul.hcl -prefix vault-keys/token "$@"
+envconsul -config /etc/envconsul.d/envconsul.hcl -prefix vault-keys/token -prefix home/aws/env "$@"
