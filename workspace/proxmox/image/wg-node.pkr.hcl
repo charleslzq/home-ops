@@ -1,7 +1,7 @@
 locals {
-  root_password    = vault("secret/home/default", "password")
-  proxmox_token_id = vault("secret/home/proxmox", "token_id")
-  proxmox_secret   = vault("secret/home/proxmox", "secret")
+  root_password    = vault("/secret/home/data/default", "password")
+  proxmox_username = vault("/secret/home/data/proxmox", "username")
+  proxmox_password = vault("/secret/home/data/proxmox", "password")
 }
 
 source "proxmox" "wg-node" {
@@ -9,8 +9,8 @@ source "proxmox" "wg-node" {
   insecure_skip_tls_verify = true
   node                     = "avalon"
   pool                     = "hashi"
-  username                 = local.proxmox_token_id
-  token                    = local.proxmox_secret
+  username                 = local.proxmox_username
+  password                 = local.proxmox_password
   iso_file                 = "images:iso/alpine-standard-3.14.0-x86_64.iso"
 
   memory  = 512
@@ -34,15 +34,12 @@ source "proxmox" "wg-node" {
     format            = "raw"
   }
 
-  ssh_username = root
+  ssh_username = "root"
   ssh_password = local.root_password
   ssh_timeout  = "35m"
 
-  floppy_dirs = [
-    "./answers"
-  ]
-  shutdown_command = "/sbin/poweroff"
-  boot_wait        = "15s"
+  http_directory = "answers"
+  boot_wait      = "15s"
   boot_command = [
     "root<enter><wait>",
     "mount -t vfat /dev/fd0 /media/floppy<enter><wait>",
@@ -62,7 +59,7 @@ source "proxmox" "wg-node" {
   ]
 
   onboot               = true
-  umount               = true
+  unmount_iso          = true
   template_name        = "wg-node"
   template_description = "template for wireguard"
 }
