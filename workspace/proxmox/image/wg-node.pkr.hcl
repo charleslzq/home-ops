@@ -38,15 +38,17 @@ source "proxmox" "wg-node" {
   ssh_password = local.root_password
   ssh_timeout  = "35m"
 
-  http_directory = "answers"
+  http_directory = "./http"
   boot_wait      = "15s"
   boot_command = [
     "root<enter><wait>",
-    "mount -t vfat /dev/fd0 /media/floppy<enter><wait>",
-    "setup-alpine -f /media/floppy/ANSWERS/wg.answerfile<enter>",
+    "ifconfig eth0 up && udhcpc -i eth0<enter><wait10>",
+    "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/wg.answerfile<enter><wait5>",
+    "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/setup.sh<enter><wait5>",
+    "setup-alpine -f $PWD/wg.answerfile<enter>",
     "<wait10>",
-    "${local.root_password}<enter>",
-    "${local.root_password}<enter>",
+    "${local.root_password}<enter><wait>",
+    "${local.root_password}<enter><wait>",
     "<wait10>",
     "y<enter>",
     "<wait10><wait10><wait10><wait10>",
@@ -54,8 +56,8 @@ source "proxmox" "wg-node" {
     "<wait90>",
     "root<enter>",
     "${local.root_password}<enter><wait>",
-    "mount -t vfat /dev/fd0 /media/floppy<enter><wait>",
-    "/media/floppy/ANSWERS/SETUP.SH<enter>"
+    "chmod +x $PWD/setup.sh<enter>",
+    "$PWD/setup.sh<enter>"
   ]
 
   onboot               = true
