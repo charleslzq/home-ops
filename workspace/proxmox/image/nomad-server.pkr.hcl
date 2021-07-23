@@ -2,7 +2,6 @@ locals {
   root_password    = vault("/secret/home/data/default", "password")
   proxmox_username = vault("/secret/home/data/proxmox", "username")
   proxmox_password = vault("/secret/home/data/proxmox", "password")
-  locale           = "en_US"
 }
 
 source "proxmox" "nomad-server" {
@@ -42,25 +41,20 @@ source "proxmox" "nomad-server" {
   http_directory = "./http"
   boot_wait      = "15s"
   boot_command = [
-    "<esc><esc><enter><wait>",
-    "/install/vmlinuz ",
-    "auto ",
-    "console-setup/ask_detect=false ",
-    "debconf/frontend=noninteractive ",
-    "debian-installer=${local.locale} ",
-    "hostname=nomad-server ",
-    "fb=false ",
-    "grub-installer/bootdev=/dev/sda<wait> ",
-    "initrd=/install/initrd.gz ",
-    "kbd-chooser/method=us ",
-    "keyboard-configuration/modelcode=SKIP ",
-    "locale=${local.locale} ",
-    "noapic ",
-    "passwd/username=root ",
-    "passwd/user-fullname=root ",
-    "passwd/user-password=${local.root_password} ",
-    "passwd/user-password-again=${local.root_password} ",
-    "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+    "<esc><wait>",
+    "<esc><wait>",
+    "<enter><wait>",
+    "/install/vmlinuz initrd=/install/initrd.gz",
+    " auto=true priority=critical",
+    " console-setup/ask_detect=false ",
+    " debconf/frontend=noninteractive ",
+    " hostname=nomad-server ",
+    " noapic ",
+    " passwd/username=root ",
+    " passwd/user-fullname=root ",
+    " passwd/user-password=${local.root_password} ",
+    " passwd/user-password-again=${local.root_password} ",
+    " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
     "-- <enter>"
   ]
 
