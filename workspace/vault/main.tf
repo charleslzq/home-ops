@@ -1,3 +1,11 @@
+terraform {
+  backend "consul" {
+    address = "127.0.0.1:8500"
+    scheme  = "http"
+    path    = "home/vault/tf"
+  }
+}
+
 provider "vault" {
   address         = "http://127.0.0.1:8200"
   skip_tls_verify = true
@@ -18,4 +26,11 @@ resource "vault_ssh_secret_backend_role" "mac" {
   backend                 = vault_mount.vm-client-signer.path
   key_type                = "ca"
   allow_user_certificates = true
+  allowed_users           = "*"
+  allowed_extensions      = "permit-pty,permit-port-forwarding"
+  default_extensions = {
+    permit-pty = ""
+  }
+  default_user = "root"
+  ttl = "1800"
 }
