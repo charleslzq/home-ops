@@ -1,14 +1,18 @@
 data "consul_keys" "proxmox" {
   key {
     name = "consul_mac"
-    path = "home/provmox/variables/consul-address"
+    path = "proxmox/consul-mac"
+  }
+  key {
+    name = "iso_path"
+    path = "images/proxmox/ubuntu_path"
   }
 }
 
 resource "proxmox_vm_qemu" "test" {
   name        = "VM-test"
   target_node = "avalon"
-  iso         = "images:iso/ubuntu-21.04-live-server-amd64.iso"
+  iso         = data.consul_keys.proxmox.var.iso_path
   os_type     = "ubuntu"
 
   cores    = 1

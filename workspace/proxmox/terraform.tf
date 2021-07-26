@@ -21,7 +21,7 @@ data "consul_keys" "config" {
   }
   key {
     name = "proxmox_url"
-    path = "home/proxmox/variables/proxmox-url"
+    path = "proxmox/url"
   }
 }
 
