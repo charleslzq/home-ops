@@ -1,8 +1,3 @@
-provider "vault" {
-  address         = "http://127.0.0.1:8200"
-  skip_tls_verify = true
-}
-
 data "vault_generic_secret" "aliyun_credentials" {
   path = "secret/home/aliyun"
 }
@@ -11,14 +6,17 @@ data "vault_generic_secret" "default" {
   path = "secret/home/default"
 }
 
-variable "LATEST_ALICLOUD_IMAGE_ID" {
-  type = string
+data "consul_keys" "aliyun" {
+  key {
+    name = "image_id"
+    path = "home/aliyun/env/tf_var_latest_alicloud_image_id"
+  }
 }
 
 provider "alicloud" {
   access_key = data.vault_generic_secret.aliyun_credentials.data.access_key
   secret_key = data.vault_generic_secret.aliyun_credentials.data.secret_key
-  region = "cn-shanghai"
+  region     = "cn-shanghai"
 }
 
 resource "alicloud_vpc" "default" {
@@ -81,7 +79,7 @@ resource "alicloud_security_group_rule" "allow-all-out" {
 resource "alicloud_instance" "Tyrion" {
   instance_name              = "Tyrion"
   instance_type              = "ecs.t5-lc2m1.nano"
-  image_id                   = var.LATEST_ALICLOUD_IMAGE_ID
+  image_id                   = data.consul_keys.aliyun.var.image_id
   password                   = data.vault_generic_secret.default.data.password
   instance_charge_type       = "PrePaid"
   internet_max_bandwidth_out = 100
