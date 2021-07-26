@@ -1,8 +1,7 @@
-data "consul_key_prefix" "proxmox" {
-    path_prefix = "home/provmox/variables"
+data "consul_keys" "proxmox" {
   key {
     name = "consul_mac"
-    path = "consul-address"
+    path = "home/provmox/variables/consul-address"
   }
 }
 
@@ -25,9 +24,9 @@ resource "proxmox_vm_qemu" "test" {
     iothread = 1
   }
   network {
-    model  = "virtio"
-    bridge = "vmbr0"
-    macaddr = data.consul_key_prefix.proxmox.var.consul_mac
+    model   = "virtio"
+    bridge  = "vmbr0"
+    macaddr = data.consul_keys.proxmox.var.consul_mac
   }
 }
 
