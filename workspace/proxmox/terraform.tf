@@ -31,6 +31,13 @@ provider "vault" {
   token           = data.consul_keys.config.var.vault-token
 }
 
+data "vault_generic_secret" "proxmox_credentials" {
+  path = "secret/home/proxmox"
+}
+
 provider "proxmox" {
-  pm_api_url = data.consul_keys.config.var.proxmox-url
+  pm_api_url      = data.consul_keys.config.var.proxmox-url
+  pm_user         = data.vault_generic_secret.proxmox_credentials.data.username
+  pm_password     = data.vault_generic_secret.proxmox_credentials.data.password
+  pm_tls_insecure = true
 }
