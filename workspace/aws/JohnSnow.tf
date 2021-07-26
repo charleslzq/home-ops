@@ -11,7 +11,7 @@ provider "aws" {
 data "consul_keys" "aws" {
   key {
     name = "ami_id"
-    path = "home/aws/env/tf_var_latest_aws_ami_id"
+    path = "images/aws_ami_id"
   }
 }
 

@@ -9,7 +9,7 @@ data "vault_generic_secret" "default" {
 data "consul_keys" "aliyun" {
   key {
     name = "image_id"
-    path = "home/aliyun/env/tf_var_latest_alicloud_image_id"
+    path = "images/aliyun_image_id"
   }
 }
 
