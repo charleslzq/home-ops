@@ -16,11 +16,11 @@ provider "consul" {}
 
 data "consul_keys" "config" {
   key {
-    name = "vault-token"
+    name = "vault_token"
     path = "vault-keys/token/vault-token"
   }
   key {
-    name = "proxmox-url"
+    name = "proxmox_url"
     path = "home/proxmox/variables/proxmox-url"
   }
 }
@@ -28,7 +28,7 @@ data "consul_keys" "config" {
 provider "vault" {
   address         = "http://127.0.0.1:8200"
   skip_tls_verify = true
-  token           = data.consul_keys.config.var.vault-token
+  token           = data.consul_keys.config.var.vault_token
 }
 
 data "vault_generic_secret" "proxmox_credentials" {
@@ -36,7 +36,7 @@ data "vault_generic_secret" "proxmox_credentials" {
 }
 
 provider "proxmox" {
-  pm_api_url      = data.consul_keys.config.var.proxmox-url
+  pm_api_url      = data.consul_keys.config.var.proxmox_url
   pm_user         = data.vault_generic_secret.proxmox_credentials.data.username
   pm_password     = data.vault_generic_secret.proxmox_credentials.data.password
   pm_tls_insecure = true
