@@ -2,7 +2,7 @@ terraform {
   backend "consul" {
     address = "127.0.0.1:8500"
     scheme  = "http"
-    path    = "home/vault/tf"
+    path    = "tf/vault"
   }
 }
 
@@ -12,10 +12,6 @@ data "consul_keys" "config" {
   key {
     name = "vault_token"
     path = "vault-keys/token/vault-token"
-  }
-  key {
-    name = "proxmox_url"
-    path = "home/proxmox/variables/proxmox-url"
   }
 }
 
