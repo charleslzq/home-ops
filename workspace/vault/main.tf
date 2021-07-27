@@ -41,6 +41,6 @@ resource "vault_ssh_secret_backend_role" "mac" {
   default_extensions = {
     permit-pty = ""
   }
-  default_user = "root"
+  default_user = "ubuntu"
   ttl          = "1800"
 }
