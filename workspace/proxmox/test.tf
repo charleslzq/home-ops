@@ -10,15 +10,16 @@ data "vault_generic_secret" "default" {
 }
 
 resource "proxmox_vm_qemu" "test" {
-  name                    = "VM-test"
-  target_node             = "avalon"
-  clone                   = "ubuntu-cloudinit"
-  os_type                 = "cloud-init"
-  ciuser                  = "ubuntu"
-  cipassword              = data.vault_generic_secret.default.data.password
-  cicustom                = "user=images:snippets/cloud-init.yml"
-  cloudinit_cdrom_storage = "local-zfs"
-  ipconfig0               = "ip=10.10.30.99/24,gw=10.10.30.1"
+  name                      = "VM-test"
+  target_node               = "avalon"
+  clone                     = "ubuntu-cloudinit"
+  os_type                   = "cloud-init"
+  ciuser                    = "ubuntu"
+  cipassword                = data.vault_generic_secret.default.data.password
+  cicustom                  = "user=images:snippets/cloud-init.yml"
+  cloudinit_cdrom_storage   = "local-zfs"
+  ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
+  guest_agent_ready_timeout = 120
 
   cores    = 1
   sockets  = "1"
