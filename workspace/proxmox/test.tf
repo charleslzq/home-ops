@@ -18,6 +18,7 @@ resource "proxmox_vm_qemu" "test" {
   cipassword              = data.vault_generic_secret.default.data.password
   cicustom                = "user=images:snippets/cloud-init.yml"
   cloudinit_cdrom_storage = "local-zfs"
+  ipconfig0               = "ip=10.10.30.99/24,gw=10.10.30.1"
 
   cores    = 1
   sockets  = "1"
@@ -35,6 +36,12 @@ resource "proxmox_vm_qemu" "test" {
     model   = "virtio"
     bridge  = "vmbr0"
     macaddr = data.consul_keys.proxmox.var.consul_mac
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "ip a"
+    ]
   }
 }
 
