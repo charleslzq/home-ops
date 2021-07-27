@@ -37,12 +37,6 @@ resource "proxmox_vm_qemu" "test" {
     bridge  = "vmbr0"
     macaddr = data.consul_keys.proxmox.var.consul_mac
   }
-
-  provisioner "remote-exec" {
-    inline = [
-      "ip a"
-    ]
-  }
 }
 
 
