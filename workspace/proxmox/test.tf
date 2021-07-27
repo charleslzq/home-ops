@@ -3,17 +3,21 @@ data "consul_keys" "proxmox" {
     name = "consul_mac"
     path = "proxmox/consul-mac"
   }
-  key {
-    name = "iso_path"
-    path = "images/proxmox/ubuntu_path"
-  }
+}
+
+data "vault_generic_secret" "default" {
+  path = "secret/home/default"
 }
 
 resource "proxmox_vm_qemu" "test" {
-  name        = "VM-test"
-  target_node = "avalon"
-  iso         = data.consul_keys.proxmox.var.iso_path
-  os_type     = "ubuntu"
+  name                    = "VM-test"
+  target_node             = "avalon"
+  clone                   = "ubuntu-cloudinit"
+  os_type                 = "cloud-init"
+  ciuser                  = "ubuntu"
+  cipassword              = data.vault_generic_secret.default.data.password
+  cicustom                = "user=images:snippets/cloud-init.yml"
+  cloudinit_cdrom_storage = "local-zfs"
 
   cores    = 1
   sockets  = "1"
