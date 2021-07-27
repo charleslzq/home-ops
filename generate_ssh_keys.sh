@@ -4,7 +4,7 @@ set -e
 
 if [ ! -f ~/.ssh/id_rsa ]
 then
-    ssh-keygen -t rsa -b 4096 -C "public@ericcharleslzq.com"
+    ssh-keygen -t rsa-sha2-512 -b 4096 -C "public@ericcharleslzq.com"
 fi
 
 CERT_FILE="/home/vagrant/.ssh/id_rsa-cert.pub"
