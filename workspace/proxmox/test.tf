@@ -1,6 +1,5 @@
 locals {
   proxmox_node = "avalon"
-  file_name    = "cloud-init-${formatdate("YYYYMMDDhhmmss", timestamp())}.yml"
 }
 
 data "consul_keys" "proxmox" {
@@ -35,7 +34,7 @@ resource "local_file" "cloud_init_user_data_file" {
 
 resource "null_resource" "cloud_init_config_files" {
   triggers = {
-    remove_file_name = local.file_name
+    file_content = local_file.cloud_init_user_data_file.content
   }
   connection {
     type     = "ssh"
@@ -45,7 +44,7 @@ resource "null_resource" "cloud_init_config_files" {
   }
   provisioner "file" {
     source      = local_file.cloud_init_user_data_file.filename
-    destination = "/mnt/pve/images/snippets/${local.file_name}"
+    destination = "/mnt/pve/images/snippets/cloud-init.yml"
   }
 }
 
@@ -56,7 +55,7 @@ resource "proxmox_vm_qemu" "test" {
   os_type                   = "cloud-init"
   ciuser                    = "ubuntu"
   cipassword                = data.vault_generic_secret.default.data.password
-  cicustom                  = "user=images:snippets/${local.file_name}"
+  cicustom                  = "user=images:snippets/cloud-init.yml"
   cloudinit_cdrom_storage   = "local-zfs"
   ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
   guest_agent_ready_timeout = 120
