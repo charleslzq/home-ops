@@ -11,6 +11,10 @@ data "consul_keys" "proxmox" {
     name = "proxmox_host"
     path = "proxmox/nodes/${local.proxmox_node}/host"
   }
+  key {
+    name = "proxmox_zfs"
+    path = "proxmox/nodes/${local.proxmox_node}/local-zfs"
+  }
 }
 
 data "vault_generic_secret" "default" {
@@ -56,7 +60,7 @@ resource "proxmox_vm_qemu" "test" {
   ciuser                    = "ubuntu"
   cipassword                = data.vault_generic_secret.default.data.password
   cicustom                  = "user=images:snippets/cloud-init.yml"
-  cloudinit_cdrom_storage   = "local-zfs"
+  cloudinit_cdrom_storage   = data.consul_keys.proxmox.var.proxmox_zfs
   ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
   guest_agent_ready_timeout = 120
 
