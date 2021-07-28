@@ -9,6 +9,30 @@ data "vault_generic_secret" "default" {
   path = "secret/home/default"
 }
 
+data "vault_generic_secret" "ssh_ca" {
+  path = "vm-client-signer/config/ca"
+}
+
+resource "local_file" "cloud_init_user_data_file" {
+  content = templatefile("${path.module}/files/cloud-init.tpl", {
+    ssh_ca_pub_key = data.vault_generic_secret.ssh_ca.data.public_key
+  })
+  filename = "${path.module}/generated/cloud-init.yml"
+}
+
+resource "null_resource" "cloud_init_config_files" {
+  provisioner "file" {
+    connection {
+      type     = "ssh"
+      user     = data.vault_generic_secret.proxmox_credentials.data.username
+      password = data.vault_generic_secret.proxmox_credentials.data.password
+      host     = "10.10.30.168"
+    }
+    source      = local_file.cloud_init_user_data_file.filename
+    destination = "/mnv/pve/images/snippets/cloud-init-1.yml"
+  }
+}
+
 resource "proxmox_vm_qemu" "test" {
   name                      = "VM-test"
   target_node               = "avalon"

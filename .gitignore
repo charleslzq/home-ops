@@ -6,3 +6,4 @@ consul-backup/*
 *.zip
 .cache
 .idea
+generated
