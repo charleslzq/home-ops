@@ -1,12 +1,25 @@
+locals {
+  proxmox_node = "avalon"
+  file_name    = "cloud-init-${formatdate("YYYYMMDDhhmmss", timestamp())}.yml"
+}
+
 data "consul_keys" "proxmox" {
   key {
     name = "consul_mac"
     path = "proxmox/consul-mac"
   }
+  key {
+    name = "proxmox_host"
+    path = "proxmox/nodes/${local.proxmox_node}/host"
+  }
 }
 
 data "vault_generic_secret" "default" {
   path = "secret/home/default"
+}
+
+data "vault_generic_secret" "proxmox_node_credentials" {
+  path = "secret/home/proxmox/${local.proxmox_node}"
 }
 
 data "vault_generic_secret" "ssh_ca" {
@@ -21,26 +34,29 @@ resource "local_file" "cloud_init_user_data_file" {
 }
 
 resource "null_resource" "cloud_init_config_files" {
+  triggers = {
+    remove_file_name = local.file_name
+  }
   connection {
     type     = "ssh"
-    user     = "root"
-    password = data.vault_generic_secret.proxmox_credentials.data.password
-    host     = "10.10.30.168"
+    user     = data.vault_generic_secret.proxmox_node_credentials.data.username
+    password = data.vault_generic_secret.proxmox_node_credentials.data.password
+    host     = data.consul_keys.proxmox.var.proxmox_host
   }
   provisioner "file" {
     source      = local_file.cloud_init_user_data_file.filename
-    destination = "/mnt/pve/images/snippets/cloud-init-1.yml"
+    destination = "/mnt/pve/images/snippets/${local.file_name}"
   }
 }
 
 resource "proxmox_vm_qemu" "test" {
   name                      = "VM-test"
-  target_node               = "avalon"
+  target_node               = local.proxmox_node
   clone                     = "ubuntu-cloudinit"
   os_type                   = "cloud-init"
   ciuser                    = "ubuntu"
   cipassword                = data.vault_generic_secret.default.data.password
-  cicustom                  = "user=images:snippets/cloud-init.yml"
+  cicustom                  = "user=images:snippets/${local.file_name}"
   cloudinit_cdrom_storage   = "local-zfs"
   ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
   guest_agent_ready_timeout = 120
