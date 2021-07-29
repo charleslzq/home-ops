@@ -43,5 +43,6 @@ fi
 vault operator unseal $(getVKey keys/unseal-key-1)
 vault operator unseal $(getVKey keys/unseal-key-2)
 vault operator unseal $(getVKey keys/unseal-key-3)
+putVKey token/vault-addr "http://127.0.0.1:8200"
 
 echo "Vault setup complete."
