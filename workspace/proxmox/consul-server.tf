@@ -3,22 +3,7 @@ locals {
   vm_name = "consul-server"
 }
 
-data "consul_keys" "proxmox" {
-  key {
-    name = "consul_mac"
-    path = "proxmox/consul-mac"
-  }
-  key {
-    name = "proxmox_host"
-    path = "proxmox/nodes/${local.proxmox_node}/host"
-  }
-  key {
-    name = "proxmox_zfs"
-    path = "proxmox/nodes/${local.proxmox_node}/local-zfs"
-  }
-}
-
-data "vault_generic_secret" "proxmox_node_credentials" {
+data "vault_generic_secret" "proxmox_node_settings" {
   path = "secret/home/proxmox/${local.proxmox_node}"
 }
 
@@ -40,9 +25,9 @@ resource "null_resource" "cloud_init_config_files" {
   }
   connection {
     type     = "ssh"
-    user     = data.vault_generic_secret.proxmox_node_credentials.data.username
-    password = data.vault_generic_secret.proxmox_node_credentials.data.password
-    host     = data.consul_keys.proxmox.var.proxmox_host
+    user     = data.vault_generic_secret.proxmox_node_settings.data.username
+    password = data.vault_generic_secret.proxmox_node_settings.data.password
+    host     = data.vault_generic_secret.proxmox_node_settings.data.host
   }
   provisioner "file" {
     source      = local_file.cloud_init_user_data_file.filename
@@ -56,7 +41,7 @@ resource "proxmox_vm_qemu" "consul-server" {
   clone                     = "ubuntu-cloudinit"
   os_type                   = "cloud-init"
   cicustom                  = "user=images:snippets/cloud-init-${local.vm_name}.yml"
-  cloudinit_cdrom_storage   = data.consul_keys.proxmox.var.proxmox_zfs
+  cloudinit_cdrom_storage   = data.vault_generic_secret.proxmox_node_settings.data.storage
   ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
   guest_agent_ready_timeout = 120
 
@@ -75,7 +60,6 @@ resource "proxmox_vm_qemu" "consul-server" {
   network {
     model   = "virtio"
     bridge  = "vmbr0"
-    macaddr = data.consul_keys.proxmox.var.consul_mac
   }
 }
 
