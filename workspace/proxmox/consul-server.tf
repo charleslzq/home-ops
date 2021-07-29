@@ -1,5 +1,6 @@
 locals {
   proxmox_node = "avalon"
+  vm_name = "consul-server"
 }
 
 data "consul_keys" "proxmox" {
@@ -17,10 +18,6 @@ data "consul_keys" "proxmox" {
   }
 }
 
-data "vault_generic_secret" "default" {
-  path = "secret/home/default"
-}
-
 data "vault_generic_secret" "proxmox_node_credentials" {
   path = "secret/home/proxmox/${local.proxmox_node}"
 }
@@ -32,8 +29,9 @@ data "vault_generic_secret" "ssh_ca" {
 resource "local_file" "cloud_init_user_data_file" {
   content = templatefile("${path.module}/files/cloud-init.tpl", {
     ssh_ca_pub_key = data.vault_generic_secret.ssh_ca.data.public_key
+    host_name = local.vm_name
   })
-  filename = "${path.module}/generated/cloud-init.yml"
+  filename = "${path.module}/generated/cloud-init-${local.vm_name}.yml"
 }
 
 resource "null_resource" "cloud_init_config_files" {
@@ -48,18 +46,16 @@ resource "null_resource" "cloud_init_config_files" {
   }
   provisioner "file" {
     source      = local_file.cloud_init_user_data_file.filename
-    destination = "/mnt/pve/images/snippets/cloud-init.yml"
+    destination = "/mnt/pve/images/snippets/cloud-init-${local.vm_name}.yml"
   }
 }
 
-resource "proxmox_vm_qemu" "test" {
-  name                      = "VM-test"
+resource "proxmox_vm_qemu" "consul-server" {
+  name                      = local.vm_name
   target_node               = local.proxmox_node
   clone                     = "ubuntu-cloudinit"
   os_type                   = "cloud-init"
-  ciuser                    = "ubuntu"
-  cipassword                = data.vault_generic_secret.default.data.password
-  cicustom                  = "user=images:snippets/cloud-init.yml"
+  cicustom                  = "user=images:snippets/cloud-init-${local.vm_name}.yml"
   cloudinit_cdrom_storage   = data.consul_keys.proxmox.var.proxmox_zfs
   ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
   guest_agent_ready_timeout = 120

@@ -13,10 +13,6 @@ data "consul_keys" "config" {
     name = "vault_token"
     path = "vault-keys/token/vault-token"
   }
-  key {
-    name = "proxmox_url"
-    path = "home/proxmox/variables/proxmox-url"
-  }
 }
 
 provider "vault" {
