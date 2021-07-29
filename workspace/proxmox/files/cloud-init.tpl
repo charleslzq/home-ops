@@ -1,7 +1,6 @@
 #cloud-config
 users:
   - default
-  # the docker service account
   - name: ubuntu
     shell: /bin/bash
     home: /home/ubuntu

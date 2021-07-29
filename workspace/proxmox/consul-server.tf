@@ -11,35 +11,16 @@ data "vault_generic_secret" "ssh_ca" {
   path = "vm-client-signer/config/ca"
 }
 
-data "local_file" "consul_config" {
-  filename = "${path.module}/files/consul.hcl"
-}
-
-data "cloudinit_config" "config" {
-  gzip          = false
-  base64_encode = false
-
-  part {
-    content_type = "text/cloud-config"
-    content = templatefile("${path.module}/files/cloud-init.tpl", {
-      ssh_ca_pub_key = data.vault_generic_secret.ssh_ca.data.public_key
-      host_name      = local.vm_name
-    })
-    merge_type = "list(append)+dict(no_replace,recurse_list)+str()"
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content = templatefile("${path.module}/files/consul.tpl", {
-      consul_config = data.local_file.consul_config.content
-    })
-    merge_type = "list(append)+dict(no_replace,recurse_list)+str()"
-  }
+locals {
+  cloud_init_config = templatefile("${path.module}/files/cloud-init.tpl", {
+    ssh_ca_pub_key = data.vault_generic_secret.ssh_ca.data.public_key
+    host_name      = local.vm_name
+  })
 }
 
 resource "null_resource" "cloud_init_config_files" {
   triggers = {
-    file_content = data.cloudinit_config.config.rendered
+    file_content = local.cloud_init_config
   }
   connection {
     type     = "ssh"
@@ -48,7 +29,7 @@ resource "null_resource" "cloud_init_config_files" {
     host     = data.vault_generic_secret.proxmox_node_settings.data.host
   }
   provisioner "file" {
-    content     = data.cloudinit_config.config.rendered
+    content     = local.cloud_init_config
     destination = "/mnt/pve/images/snippets/cloud-init-${local.vm_name}.yml"
   }
 }
@@ -60,7 +41,7 @@ resource "proxmox_vm_qemu" "consul-server" {
   clone                     = "ubuntu-cloudinit"
   os_type                   = "cloud-init"
   cicustom                  = "user=images:snippets/cloud-init-${local.vm_name}.yml"
-  cloudinit_cdrom_storage   = data.vault_generic_secret.proxmox_node_settings.data.storage
+  cloudinit_cdrom_storage   = "local-zfs"
   ipconfig0                 = "ip=10.10.30.99/24,gw=10.10.30.1"
   guest_agent_ready_timeout = 120
 
@@ -73,7 +54,7 @@ resource "proxmox_vm_qemu" "consul-server" {
   disk {
     size     = "20G"
     type     = "scsi"
-    storage  = "local-zfs"
+    storage  = data.vault_generic_secret.proxmox_node_settings.data.storage
     iothread = 1
   }
   network {
