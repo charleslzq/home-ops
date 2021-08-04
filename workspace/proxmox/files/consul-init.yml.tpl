@@ -1,3 +1,6 @@
+users:
+  - name: consul
+    system: true
 write_files:
   - path: /etc/consul.d/consul.hcl
     content: |
@@ -40,11 +43,12 @@ runcmd:
   - cd /tmp/
   - curl -sSL  https://releases.hashicorp.com/consul/${consul_version}/consul_${consul_version}_linux_amd64.zip > consul.zip
   - unzip consul.zip
+  - sudo chown consul:consul consul
   - sudo chmod +x consul
   - sudo mv consul /usr/local/bin/
   - rm /tmp/consul.zip
   - sudo mkdir -p /var/lib/consul
-  - sudo chown -R ubuntu:ubuntu /var/lib/consul
+  - sudo chown -R consul:consul /var/lib/consul
   - sudo chmod -R 775 /var/lib/consul
   - sudo systemctl enable consul
   - sudo systemctl start consul
