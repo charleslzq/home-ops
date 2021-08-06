@@ -56,6 +56,10 @@ resource "vault_pki_secret_backend_cert" "consul" {
   common_name = "rayleigh.zenq.me"
 }
 
+data "vault_generic_secret" "consul_config" {
+  path = "secret/home/consul"
+}
+
 data "cloudinit_config" "config" {
   gzip          = false
   base64_encode = false
@@ -76,6 +80,9 @@ data "cloudinit_config" "config" {
       consul_ca      = indent(6, vault_pki_secret_backend_cert.consul.issuing_ca)
       consul_cert    = indent(6, vault_pki_secret_backend_cert.consul.certificate)
       consul_key     = indent(6, vault_pki_secret_backend_cert.consul.private_key)
+      consul_config = indent(6, templatefile("${path.module}/files/consul.hcl.tpl", {
+        encrypt_key = jsonencode(data.vault_generic_secret.consul_config.data.encrypt-key)
+      }))
     })
     merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
   }

@@ -4,17 +4,7 @@ users:
 write_files:
   - path: /etc/consul.d/consul.hcl
     content: |
-      bind_addr   = "127.0.0.1"
-      bootstrap_expect = 1
-      client_addr = "0.0.0.0"
-      data_dir    = "/var/lib/consul"
-      server      = true
-      telemetry {
-        disable_compat_1.9 = true
-      }
-      ui_config {
-        enabled = true
-      }
+      ${consul_config}
   - path: /etc/consul.d/consul-agent-ca.pem
     content: |
       ${consul_ca}
