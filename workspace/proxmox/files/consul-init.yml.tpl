@@ -25,8 +25,8 @@ write_files:
 
       [Service]
       Type=notify
-      User=ubuntu
-      Group=ubuntu
+      User=consul
+      Group=consul
       ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
       ExecReload=/bin/kill --signal HUP $MAINPID
       KillMode=process
