@@ -73,6 +73,9 @@ data "cloudinit_config" "config" {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/files/consul-init.yml.tpl", {
       consul_version = local.consul_version
+      consul_ca      = indent(6, vault_pki_secret_backend_cert.consul.issuing_ca)
+      consul_cert    = indent(6, vault_pki_secret_backend_cert.consul.certificate)
+      consul_key     = indent(6, vault_pki_secret_backend_cert.consul.private_key)
     })
     merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
   }
