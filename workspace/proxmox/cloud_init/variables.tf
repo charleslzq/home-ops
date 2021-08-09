@@ -7,7 +7,8 @@ variable "proxmox_node" {
 }
 
 variable "cloud_init_content" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "cloud_ip_config" {
