@@ -2,6 +2,10 @@ data "vault_generic_secret" "ssh_ca" {
   path = "vm-client-signer/config/ca"
 }
 
+data "vault_generic_secret" "consul_config" {
+  path = "secret/home/consul"
+}
+
 resource "vault_pki_secret_backend" "consul" {
   path                      = "consul"
   default_lease_ttl_seconds = 3600 * 86000
@@ -43,9 +47,5 @@ resource "vault_pki_secret_backend_cert" "consul" {
   backend = vault_pki_secret_backend.consul.path
   name    = vault_pki_secret_backend_role.consul.name
 
-  common_name = "rayleigh.zenq.me"
-}
-
-data "vault_generic_secret" "consul_config" {
-  path = "secret/home/consul"
+  common_name = var.domain
 }
