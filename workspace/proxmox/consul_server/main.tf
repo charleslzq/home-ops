@@ -19,7 +19,7 @@ data "cloudinit_config" "config" {
       consul_cert    = indent(6, vault_pki_secret_backend_cert.consul.certificate)
       consul_key     = indent(6, vault_pki_secret_backend_cert.consul.private_key)
       consul_config = indent(6, templatefile("${path.module}/files/consul.hcl.tpl", {
-        encrypt_key = jsonencode(data.vault_generic_secret.consul_config.data.encrypt-key)
+        encrypt_key = jsonencode(data.vault_generic_secret.consul_config.data.encrypt_key)
         ip          = var.ip
       }))
     })
