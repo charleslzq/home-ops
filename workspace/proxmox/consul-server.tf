@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    proxmox = {
+      source = "telmate/proxmox"
+    }
+  }
+}
+
 module "consul_server" {
   source         = "./consul_server"
   vm_name        = "consul-server-1"
