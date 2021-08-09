@@ -14,7 +14,7 @@ server = true
 bootstrap_expect = 1
 ui = true
 client_addr = "0.0.0.0"
-advertise_addr = "10.10.30.99"
+advertise_addr = ${ip}
 auto_encrypt {
   allow_tls = true
 }

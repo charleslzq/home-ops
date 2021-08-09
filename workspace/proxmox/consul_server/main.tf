@@ -20,6 +20,7 @@ data "cloudinit_config" "config" {
       consul_key     = indent(6, var.private_key)
       consul_config = indent(6, templatefile("${path.module}/files/consul.hcl.tpl", {
         encrypt_key = jsonencode(var.encrypt_key)
+        ip = var.ip
       }))
     })
     merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
