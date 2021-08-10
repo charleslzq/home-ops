@@ -46,3 +46,7 @@ variable "encrypt_key" {
   type      = string
   sensitive = true
 }
+
+variable "server_ip_list" {
+  type = list(string)
+}

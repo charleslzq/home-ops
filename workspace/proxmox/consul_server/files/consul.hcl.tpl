@@ -7,11 +7,12 @@ key_file = "/etc/consul.d/dc1-server-consul-0-key.pem"
 verify_incoming = true
 verify_outgoing = true
 verify_server_hostname = true
+retry_join = ${server_ip_list}
 performance {
   raft_multiplier = 1
 }
 server = true
-bootstrap_expect = 1
+bootstrap_expect = ${server_count}
 ui = true
 client_addr = "0.0.0.0"
 advertise_addr = ${ip}
