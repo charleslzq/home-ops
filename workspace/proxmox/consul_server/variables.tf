@@ -21,3 +21,28 @@ variable "ip" {
 variable "gateway" {
   type = string
 }
+
+variable "ssh_ca_cert" {
+  type      = string
+  sensitive = true
+}
+
+variable "ca_cert" {
+  type      = string
+  sensitive = true
+}
+
+variable "cert" {
+  type      = string
+  sensitive = true
+}
+
+variable "key" {
+  type      = string
+  sensitive = true
+}
+
+variable "encrypt_key" {
+  type      = string
+  sensitive = true
+}

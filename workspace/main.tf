@@ -8,4 +8,6 @@ module "proxmox" {
   depends_on = [
     module.local_vault
   ]
+
+  ssh_ca_cert = module.local_vault.ssh_ca_cert
 }
