@@ -18,7 +18,7 @@ locals {
 module "consul_server" {
   count = length(local.servers)
 
-  source         = "./consul_server"
+  source         = "./modules/consul_server"
   vm_name        = "consul-server-${count.index + 1}"
   proxmox_node   = local.servers[count.index].proxmox_node
   consul_version = "1.10.1"

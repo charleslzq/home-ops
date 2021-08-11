@@ -1,9 +1,9 @@
 module "local_vault" {
-  source = "./vault"
+  source = "./modules/vault"
 }
 
 module "proxmox" {
-  source = "./proxmox"
+  source = "./modules/proxmox"
 
   depends_on = [
     module.local_vault
