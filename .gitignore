@@ -7,3 +7,4 @@ consul-backup/*
 .cache
 .idea
 generated
+*.tfstate
