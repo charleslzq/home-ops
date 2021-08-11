@@ -1,5 +1,5 @@
 module "cifs" {
-  source = "../cifs"
+  source = "../cifs-config"
 }
 
 module "cloud-init-vm" {
