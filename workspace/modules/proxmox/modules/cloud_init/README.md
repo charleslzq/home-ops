@@ -24,7 +24,7 @@ proxmox_node | string | proxmox node the vm will be created on
 cloud_ip_config | string | ip related config, like: `ip=192.168.1.2/24,gw=192.168.1.1`
 cloud_init_parts | list | additional cloud init config
 
-the fields of objects in cloud_init_parts is:
+The fields of objects in cloud_init_parts are:
 name | type | description
 --- | --- | ---
 content_type | string | the type of cloud config. See: [Cloud Init Mime Types](https://cloudinit.readthedocs.io/en/latest/topics/format.html)
