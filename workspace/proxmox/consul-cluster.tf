@@ -11,27 +11,24 @@ data "vault_generic_secret" "consul_config" {
 }
 
 locals {
-  server_ip_list = [
-    data.vault_generic_secret.consul_config.data.server_1_ip,
-    data.vault_generic_secret.consul_config.data.server_2_ip,
-    data.vault_generic_secret.consul_config.data.server_3_ip
-  ]
+  servers = jsondecode(nonsensitive(data.vault_generic_secret.consul_config.data.servers))
+  server_ip_list = local.servers.*.ip
 }
 
 module "consul_server" {
-  count = length(local.server_ip_list)
+  count = length(local.servers)
 
   source         = "./consul_server"
   vm_name        = "consul-server-${count.index + 1}"
-  proxmox_node   = lookup(data.vault_generic_secret.consul_config.data, "server_${count.index + 1}_proxmox_node", "")
+  proxmox_node   = local.servers[count.index].proxmox_node
   consul_version = "1.10.1"
   server_ip_list = local.server_ip_list
-  ip             = lookup(data.vault_generic_secret.consul_config.data, "server_${count.index + 1}_ip", "")
+  ip             = local.servers[count.index].ip
   gateway        = data.vault_generic_secret.consul_config.data.gateway
   encrypt_key    = data.vault_generic_secret.consul_config.data.encrypt_key
   ca_cert        = data.vault_generic_secret.consul_config.data.ca_cert
   ssh_ca_cert    = var.ssh_ca_cert
-  cert           = lookup(data.vault_generic_secret.consul_config.data, "server_${count.index + 1}_cert", "")
-  key            = lookup(data.vault_generic_secret.consul_config.data, "server_${count.index + 1}_key", "")
+  cert           = local.servers[count.index].cert
+  key            = local.servers[count.index].key
   domain         = "rayleigh.zenq.me"
 }
