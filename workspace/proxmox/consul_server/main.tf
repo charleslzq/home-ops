@@ -1,3 +1,7 @@
+data "vault_generic_secret" "cifs_settings" {
+  path = "secret/home/cifs"
+}
+
 data "cloudinit_config" "config" {
   gzip          = false
   base64_encode = false
@@ -7,6 +11,9 @@ data "cloudinit_config" "config" {
     content = templatefile("${path.module}/../files/cloud-init.yml.tpl", {
       ssh_ca_pub_key = var.ssh_ca_cert
       host_name      = var.vm_name
+      cifs_path      = data.vault_generic_secret.cifs_settings.data.path
+      cifs_username  = data.vault_generic_secret.cifs_settings.data.username
+      cifs_password  = data.vault_generic_secret.cifs_settings.data.password
     })
     merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
   }

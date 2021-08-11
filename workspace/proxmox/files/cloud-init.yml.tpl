@@ -16,6 +16,10 @@ bootcmd:
   - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/trusted-user-ca-keys.pem" >> /etc/ssh/sshd_config
 package_update: true
 package_upgrade: true
+packages:
+  - cifs-utils
+mounts:
+ - [ "${cifs_path}", /mnt/cifs, cifs, "_netdev,nofail,username=${cifs_username},password=${cifs_password}", "0", "0" ]
 hostname: ${host_name}
 power_state:
   timeout: 30

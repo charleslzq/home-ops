@@ -37,15 +37,11 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 runcmd:
-  - sudo apt-get update
-  - sudo apt-get install -y zip curl
-  - cd /tmp/
-  - curl -sSL  https://releases.hashicorp.com/consul/${consul_version}/consul_${consul_version}_linux_amd64.zip > consul.zip
-  - unzip consul.zip
+  - sudo cp /mnt/cifs/cloud-init/consul/${consul_version}/consul /usr/local/bin
+  - cd /usr/local/bin/
   - sudo chown consul:consul consul
   - sudo chmod +x consul
   - sudo mv consul /usr/local/bin/
-  - rm /tmp/consul.zip
   - sudo mkdir -p /var/lib/consul
   - sudo chown -R consul:consul /var/lib/consul
   - sudo chmod -R 775 /var/lib/consul
