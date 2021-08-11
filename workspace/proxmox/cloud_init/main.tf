@@ -10,9 +10,33 @@ data "vault_generic_secret" "proxmox_node_settings" {
   path = "secret/home/proxmox/${var.proxmox_node}"
 }
 
+data "cloudinit_config" "config" {
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/cloud-config"
+    content = templatefile("${path.module}/files/cloud-init.yml.tpl", {
+      ssh_ca_pub_key = var.ssh_ca_cert
+      host_name      = var.vm_name
+    })
+    merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
+  }
+
+  dynamic "part" {
+    for_each = var.cloud_init_parts
+
+    content {
+      content_type = part.value.content_type
+      content      = part.value.content
+      merge_type   = part.value.merge_type
+    }
+  }
+}
+
 resource "null_resource" "cloud_init_config_files" {
   triggers = {
-    file_content = var.cloud_init_content
+    file_content = data.cloudinit_config.config.rendered
   }
   connection {
     type     = "ssh"
@@ -21,7 +45,7 @@ resource "null_resource" "cloud_init_config_files" {
     host     = data.vault_generic_secret.proxmox_node_settings.data.host
   }
   provisioner "file" {
-    content     = var.cloud_init_content
+    content     = data.cloudinit_config.config.rendered
     destination = "/mnt/pve/images/snippets/cloud-init-${var.vm_name}.yml"
   }
 }
