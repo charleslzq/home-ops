@@ -9,7 +9,7 @@
 
 name | type | description
 --- | --- | ---
-host | string | node host, including port
+host | string | node host
 username | string | ssh username
 password | string | ssh password
 storage | string | disk storage for vm, there is no way to override currently
