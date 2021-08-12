@@ -32,4 +32,6 @@ module "cloud-init-vm" {
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
+  memory    = 512
+  disk_size = "5G"
 }

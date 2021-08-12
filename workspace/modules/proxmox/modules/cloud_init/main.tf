@@ -61,14 +61,14 @@ resource "proxmox_vm_qemu" "cloud-init-server" {
   ipconfig0                 = var.cloud_ip_config
   guest_agent_ready_timeout = 120
 
-  cores    = 1
-  sockets  = "1"
+  cores    = var.cores
+  sockets  = var.sockets
   cpu      = "host"
-  memory   = 1024
+  memory   = var.memory
   scsihw   = "virtio-scsi-pci"
   bootdisk = "scsi0"
   disk {
-    size     = "20G"
+    size     = var.disk_size
     type     = "scsi"
     storage  = data.vault_generic_secret.proxmox_node_settings.data.storage
     iothread = 1

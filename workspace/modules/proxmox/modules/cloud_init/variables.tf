@@ -22,3 +22,23 @@ variable "cloud_init_parts" {
   }))
 }
 
+variable "cores" {
+  type    = number
+  default = 1
+}
+
+variable "sockets" {
+  type    = string
+  default = "1"
+}
+
+variable "memory" {
+  type    = number
+  default = 1024
+}
+
+variable "disk_size" {
+  type    = string
+  default = "20G"
+}
+
