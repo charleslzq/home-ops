@@ -1,5 +1,5 @@
 packages:
-  - cifs-utils
+  - wireguard
 write_files:
   - path: /etc/wireguard/wg0.conf
     content: |
