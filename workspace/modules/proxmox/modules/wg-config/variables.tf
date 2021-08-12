@@ -35,24 +35,3 @@ variable "peers" {
     keep_alive  = optional(number)
   }))
 }
-
-variable "vm_name" {
-  type = string
-}
-
-variable "proxmox_node" {
-  type = string
-}
-
-variable "ip" {
-  type = string
-}
-
-variable "gateway" {
-  type = string
-}
-
-variable "ssh_ca_cert" {
-  type      = string
-  sensitive = true
-}
