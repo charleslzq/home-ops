@@ -29,9 +29,9 @@ variable "listen_port" {
 
 variable "peers" {
   type = list(object({
-    endpoint    = optional(string)
+    endpoint    = string
     public_key  = string
     allowed_ips = string
-    keep_alive  = optional(number)
+    keep_alive  = number
   }))
 }

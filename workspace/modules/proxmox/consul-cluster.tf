@@ -11,7 +11,7 @@ data "vault_generic_secret" "consul_config" {
 }
 
 locals {
-  servers = jsondecode(nonsensitive(data.vault_generic_secret.consul_config.data.servers))
+  servers        = jsondecode(nonsensitive(data.vault_generic_secret.consul_config.data.servers))
   server_ip_list = local.servers.*.ip
 }
 
