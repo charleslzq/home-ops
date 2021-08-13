@@ -50,3 +50,7 @@ variable "encrypt_key" {
 variable "server_ip_list" {
   type = list(string)
 }
+
+variable "cifs_config" {
+  type = string
+}

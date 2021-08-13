@@ -1,8 +1,4 @@
-module "cifs" {
-  source = "../cifs-config"
-}
-
-module "cloud-init-vm" {
+module "consul-server" {
   source = "../cloud_init"
 
   vm_name         = var.vm_name
@@ -12,7 +8,7 @@ module "cloud-init-vm" {
   cloud_init_parts = [
     {
       content_type = "text/cloud-config"
-      content      = module.cifs.cloud_init_config
+      content      = var.cifs_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     },
     {
