@@ -37,13 +37,12 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 runcmd:
-  - sudo cp /mnt/cifs/cloud-init/consul/${consul_version}/consul /usr/local/bin
+  - sudo cp /mnt/cifs/cloud-init/consul/${consul_version}/consul /usr/local/bin/
   - cd /usr/local/bin/
   - sudo chown consul:consul consul
   - sudo chmod +x consul
-  - sudo mv consul /usr/local/bin/
-  - sudo mkdir -p /var/lib/consul
-  - sudo chown -R consul:consul /var/lib/consul
-  - sudo chmod -R 775 /var/lib/consul
+  - sudo mkdir -p /opt/consul/data
+  - sudo chown -R consul:consul /opt/consul/data
+  - sudo chmod -R 775 /opt/consul/data
   - sudo systemctl enable consul
   - sudo systemctl start consul

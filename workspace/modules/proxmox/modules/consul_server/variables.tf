@@ -54,3 +54,7 @@ variable "server_ip_list" {
 variable "cifs_config" {
   type = string
 }
+
+variable "nomad_version" {
+  type = string
+}

@@ -1,4 +1,4 @@
-module "consul-server" {
+module "consul-nomad-server" {
   source = "../cloud_init"
 
   vm_name         = var.vm_name
@@ -26,6 +26,14 @@ module "consul-server" {
         }))
       })
       merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
+    },
+    {
+      content_type = "text/cloud-config"
+      content = templatefile("${path.module}/files/nomad-init.yml.tpl", {
+        nomad_version = var.nomad_version
+      })
+      merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
+  memory = 2048
 }

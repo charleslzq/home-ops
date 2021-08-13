@@ -1,5 +1,5 @@
 datacenter = "rayleigh"
-data_dir = "/var/lib/consul"
+data_dir = "/opt/consul/data"
 encrypt = ${encrypt_key}
 ca_file = "/etc/consul.d/consul-agent-ca.pem"
 cert_file = "/etc/consul.d/dc1-server-consul-0.pem"
