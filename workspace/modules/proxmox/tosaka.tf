@@ -20,7 +20,7 @@ locals {
 module "servents" {
   count = length(local.masters)
 
-  source       = "./modules/pihole"
+  source       = "modules/pihole-config"
   hostname     = local.masters[count.index].hostname
   web_password = data.vault_generic_secret.default.data.password
   ip           = local.masters[count.index].ip
