@@ -8,16 +8,6 @@ locals {
   vault_router_id  = 2
 }
 
-module "vault_keepalive_config" {
-  count = length(local.vaults)
-
-  source    = "./modules/configs/keepalived"
-  ip        = local.vault_virtual_ip
-  router_id = local.vault_router_id
-  password  = data.vault_generic_secret.vault_settings.data.keepalive_password
-  state     = local.vaults[count.index].state
-}
-
 module "vault_consul_config" {
   count = length(local.vaults)
 
@@ -29,6 +19,14 @@ module "vault_consul_config" {
   key            = local.vaults[count.index].key
   ip             = local.vaults[count.index].ip
   server_ip_list = local.server_ip_list
+}
+
+module "vault_config" {
+  count  = 2
+  source = "./modules/configs/vault"
+
+  vault_version = local.vault_version
+  ip            = local.vaults[count.index].ip
 }
 
 module "yuki" {
@@ -52,7 +50,7 @@ module "yuki" {
     },
     {
       content_type = "text/cloud-config"
-      content      = module.vault_keepalive_config[count.index].cloud_init_config
+      content      = module.vault_config[count.index].cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
