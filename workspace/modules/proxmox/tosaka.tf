@@ -2,19 +2,37 @@ data "vault_generic_secret" "default" {
   path = "secret/home/default"
 }
 
+data "vault_generic_secret" "tosaka_setting" {
+  path = "secret/home/tosaka"
+}
+
 locals {
+  tosaka_virtual_ip = "10.10.30.235"
+  tosaka_router_id  = 2
   masters = [
     {
       hostname = "rin"
       node     = "skypiea"
-      ip       = "10.10.30.235"
+      ip       = "10.10.30.234"
+      state    = "MASTER"
     },
     {
       hostname = "sakura"
       node     = "avalon"
       ip       = "10.10.30.236"
+      state    = "BACKUP"
     }
   ]
+}
+
+module "tosaka_keepalive_config" {
+  count = length(local.masters)
+
+  source    = "./modules/configs/keepalived"
+  ip        = local.tosaka_virtual_ip
+  router_id = local.tosaka_router_id
+  password  = data.vault_generic_secret.tosaka_setting.data.keepalive_password
+  state     = local.masters[count.index].state
 }
 
 module "servents" {
@@ -41,6 +59,11 @@ module "tosaka" {
     {
       content_type = "text/cloud-config"
       content      = module.servents[count.index].cloud_init_config
+      merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
+    },
+    {
+      content_type = "text/cloud-config"
+      content      = module.tosaka_keepalive_config[count.index].cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
