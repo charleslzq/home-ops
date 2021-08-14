@@ -3,7 +3,9 @@ data "vault_generic_secret" "wg_settings" {
 }
 
 locals {
-  relays = jsondecode(nonsensitive(data.vault_generic_secret.wg_settings.data.relays))
+  relays           = jsondecode(nonsensitive(data.vault_generic_secret.wg_settings.data.relays))
+  relay_virtual_ip = "10.10.30.32"
+  relay_router_id  = 1
 }
 
 module "wg_config" {
@@ -17,7 +19,17 @@ module "wg_config" {
   peers       = local.relays[count.index].peers
 }
 
-module "cloud-init-vm" {
+module "wg_keepalive_config" {
+  count = length(local.relays)
+
+  source    = "./modules/keepalived-config"
+  ip        = local.relay_virtual_ip
+  router_id = local.relay_router_id
+  password  = data.vault_generic_secret.wg_settings.data.relay_keepalive_password
+  state     = local.relays[count.index].state
+}
+
+module "wg-relays" {
   count = length(local.relays)
 
   source          = "./modules/cloud_init"
@@ -29,6 +41,11 @@ module "cloud-init-vm" {
     {
       content_type = "text/cloud-config"
       content      = module.wg_config[count.index].cloud_init_config
+      merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
+    },
+    {
+      content_type = "text/cloud-config"
+      content      = module.wg_keepalive_config[count.index].cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
