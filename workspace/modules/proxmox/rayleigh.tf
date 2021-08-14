@@ -18,7 +18,7 @@ locals {
 module "rayleigh" {
   count = length(local.servers)
 
-  source         = "./modules/server_consul_nomad"
+  source         = "./modules/consul_nomad"
   vm_name        = "rayleigh-${count.index + 1}"
   proxmox_node   = local.servers[count.index].proxmox_node
   consul_version = "1.10.1"

@@ -8,9 +8,9 @@ locals {
   relay_router_id  = 1
 }
 
-module "wg_config" {
+module "wg_relay_config" {
   count  = length(local.relays)
-  source = "./modules/config_wg"
+  source = "./modules/configs/wireguard"
 
   address     = local.relays[count.index].address
   private_key = local.relays[count.index].private_key
@@ -19,20 +19,20 @@ module "wg_config" {
   peers       = local.relays[count.index].peers
 }
 
-module "wg_keepalive_config" {
+module "wg_relay_keepalive_config" {
   count = length(local.relays)
 
-  source    = "./modules/config_keepalived"
+  source    = "./modules/configs/keepalived"
   ip        = local.relay_virtual_ip
   router_id = local.relay_router_id
   password  = data.vault_generic_secret.wg_settings.data.relay_keepalive_password
   state     = local.relays[count.index].state
 }
 
-module "wg-relays" {
+module "wg_relays" {
   count = length(local.relays)
 
-  source          = "./modules/server_cloud_init"
+  source          = "./modules/cloud_init"
   vm_name         = local.relays[count.index].name
   proxmox_node    = local.relays[count.index].proxmox_node
   cloud_ip_config = "ip=${local.relays[count.index].ip}/24,gw=10.10.30.1"
@@ -40,12 +40,12 @@ module "wg-relays" {
   cloud_init_parts = [
     {
       content_type = "text/cloud-config"
-      content      = module.wg_config[count.index].cloud_init_config
+      content      = module.wg_relay_config[count.index].cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     },
     {
       content_type = "text/cloud-config"
-      content      = module.wg_keepalive_config[count.index].cloud_init_config
+      content      = module.wg_relay_keepalive_config[count.index].cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
