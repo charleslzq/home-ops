@@ -8,10 +8,10 @@ write_files:
   - path: /etc/consul.d/consul-agent-ca.pem
     content: |
       ${consul_ca}
-  - path: /etc/consul.d/dc1-server-consul-0.pem
+  - path: /etc/consul.d/dc1-client-consul-0.pem
     content: |
       ${consul_cert}
-  - path: /etc/consul.d/dc1-server-consul-0-key.pem
+  - path: /etc/consul.d/dc1-client-consul-0-key.pem
     content: |
       ${consul_key}
   - path: /etc/systemd/system/consul.service

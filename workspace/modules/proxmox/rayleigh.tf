@@ -21,8 +21,8 @@ module "rayleigh" {
   source         = "./modules/consul_nomad"
   vm_name        = "rayleigh-${count.index + 1}"
   proxmox_node   = local.servers[count.index].proxmox_node
-  consul_version = "1.10.1"
-  nomad_version  = "1.1.3"
+  consul_version = local.consul_version
+  nomad_version  = local.nomad_version
   cifs_config    = module.cifs.cloud_init_config
   server_ip_list = local.server_ip_list
   ip             = local.servers[count.index].ip
