@@ -1,3 +1,3 @@
 module "cifs" {
-  source = "./modules/cifs-config"
+  source = "./modules/config_cifs"
 }

@@ -20,7 +20,7 @@ locals {
 module "servents" {
   count = length(local.masters)
 
-  source       = "modules/pihole-config"
+  source       = "./modules/config_pihole"
   hostname     = local.masters[count.index].hostname
   web_password = data.vault_generic_secret.default.data.password
   ip           = local.masters[count.index].ip
@@ -32,7 +32,7 @@ module "tosaka" {
   ]
   count = length(local.masters)
 
-  source          = "./modules/cloud_init"
+  source          = "./modules/server_cloud_init"
   vm_name         = local.masters[count.index].hostname
   proxmox_node    = local.masters[count.index].node
   cloud_ip_config = "ip=${local.masters[count.index].ip}/24,gw=10.10.30.1"

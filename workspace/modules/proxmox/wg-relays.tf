@@ -10,7 +10,7 @@ locals {
 
 module "wg_config" {
   count  = length(local.relays)
-  source = "./modules/wg-config"
+  source = "./modules/config_wg"
 
   address     = local.relays[count.index].address
   private_key = local.relays[count.index].private_key
@@ -22,7 +22,7 @@ module "wg_config" {
 module "wg_keepalive_config" {
   count = length(local.relays)
 
-  source    = "./modules/keepalived-config"
+  source    = "./modules/config_keepalived"
   ip        = local.relay_virtual_ip
   router_id = local.relay_router_id
   password  = data.vault_generic_secret.wg_settings.data.relay_keepalive_password
@@ -32,7 +32,7 @@ module "wg_keepalive_config" {
 module "wg-relays" {
   count = length(local.relays)
 
-  source          = "./modules/cloud_init"
+  source          = "./modules/server_cloud_init"
   vm_name         = local.relays[count.index].name
   proxmox_node    = local.relays[count.index].proxmox_node
   cloud_ip_config = "ip=${local.relays[count.index].ip}/24,gw=10.10.30.1"

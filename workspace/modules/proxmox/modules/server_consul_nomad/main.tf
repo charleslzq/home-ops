@@ -1,5 +1,5 @@
 module "consul-nomad-server" {
-  source = "../cloud_init"
+  source = "../server_cloud_init"
 
   vm_name         = var.vm_name
   proxmox_node    = var.proxmox_node
