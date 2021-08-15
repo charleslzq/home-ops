@@ -11,6 +11,9 @@ retry_join = ${server_ip_list}
 performance {
   raft_multiplier = 1
 }
+connect {
+  enabled = true
+}
 server = true
 bootstrap_expect = ${server_count}
 ui = true
