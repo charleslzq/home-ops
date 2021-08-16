@@ -15,6 +15,10 @@ providers:
     requireConsistent: true
     exposedByDefault: false
     defaultRule: "Host(`{{ .Name }}.zenq.me`)"
+  file:
+    watch: true
+    directory: "/etc/traefik.d"
+    debugLogGeneratedTemplate: true
 
 entryPoints:
   web:

@@ -16,18 +16,6 @@ write_files:
               certFile: /etc/traefik.d/https/fullchain.pem
               keyFile: /etc/traefik.d/https/privkey.pem
 
-      http:
-        routers:
-          http-catchall:
-            rule: hostregexp(`{host:.+}`)
-            entrypoints:
-              - web
-            middlewares:
-              - redirect-to-https@file
-        middlewares:
-          redirect-to-https:
-            redirectscheme:
-              scheme: https
   - path: /etc/systemd/system/traefik.service
     content: |
       [Unit]
@@ -56,7 +44,8 @@ write_files:
         name = "joker"
         port = 8080
         tags = [
-          "traefik.enable=true"
+          "traefik.enable=true",
+          "traefik.http.routers.joker.tls=true"
         ]
       }
 runcmd:
