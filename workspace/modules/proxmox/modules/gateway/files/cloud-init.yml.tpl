@@ -2,6 +2,32 @@ write_files:
   - path: /etc/traefik/traefik.yml
     content: |
       ${traefik_config}
+  - path: /etc/traefik.d/https.yml
+    content: |
+      tls:
+        certificates:
+          - certFile: /etc/traefik.d/https/fullchain.pem
+            keyFile: /etc/traefik.d/https/privkey.pem
+            stores:
+              - default
+        stores:
+          default:
+            defaultCertificate:
+              certFile: /etc/traefik.d/https/fullchain.pem
+              keyFile: /etc/traefik.d/https/privkey.pem
+
+      http:
+        routers:
+          http-catchall:
+            rule: hostregexp(`{host:.+}`)
+            entrypoints:
+              - web
+            middlewares:
+              - redirect-to-https@file
+        middlewares:
+          redirect-to-https:
+            redirectscheme:
+              scheme: https
   - path: /etc/systemd/system/traefik.service
     content: |
       [Unit]
@@ -36,6 +62,7 @@ write_files:
 runcmd:
   - sudo cp /mnt/cifs/cloud-init/traefik/${traefik_version}/traefik /usr/local/bin/
   - sudo mkdir /etc/traefik.d/
+  - sudo cp -r /mnt/cifs/certificates/https /etc/traefik.d/
   - cd /usr/local/bin/
   - sudo chmod +x traefik
   - sudo systemctl enable traefik
