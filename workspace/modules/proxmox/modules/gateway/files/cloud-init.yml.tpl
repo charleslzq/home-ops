@@ -47,6 +47,13 @@ write_files:
           "traefik.enable=true",
           "traefik.http.routers.joker.tls=true"
         ]
+        checks = [
+          {
+            http = "http://localhost:8080/ping"
+            interval = "10s"
+            timeout = "1s"
+          }
+        ]
       }
 runcmd:
   - sudo cp /mnt/cifs/cloud-init/traefik/${traefik_version}/traefik /usr/local/bin/

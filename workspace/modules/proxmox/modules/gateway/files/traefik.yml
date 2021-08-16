@@ -10,6 +10,8 @@ api:
   dashboard: true
   insecure: true
 
+ping: {}
+
 providers:
   consulCatalog:
     requireConsistent: true
