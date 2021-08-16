@@ -1,0 +1,23 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+log:
+  level: INFO
+  format: common
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  consulCatalog:
+    requireConsistent: true
+    exposedByDefault: false
+    defaultRule: "Host(`{{ .Name }}.zenq.me`)"
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"

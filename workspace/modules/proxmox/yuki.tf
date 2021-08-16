@@ -33,7 +33,7 @@ module "yuki" {
   count = length(local.vaults)
 
   source          = "./modules/cloud_init"
-  vm_name         = "yuku-${count.index + 1}"
+  vm_name         = "yuki-${count.index + 1}"
   proxmox_node    = local.vaults[count.index].proxmox_node
   cloud_ip_config = "ip=${local.vaults[count.index].ip}/24,gw=10.10.30.1"
   ssh_ca_cert     = var.ssh_ca_cert
