@@ -21,11 +21,29 @@ write_files:
             rule: Host(`joker.zenq.me`)
             tls: true
             service: dashboard
+          rayleigh:
+            rule: Host(`rayleigh.zenq.me`)
+            tls: true
+            service: rayleigh
+          yakumo:
+            rule: Host(`yakumo.zenq.me`)
+            tls: true
+            service: yakumo
         services:
           dashboard:
             loadBalancer:
               servers:
                 - url: "http://127.0.0.1:8080"
+          rayleigh:
+            loadBalancer:
+              servers:
+                - url: "http://10.10.30.99:8500"
+                - url: "http://10.10.30.100:8500"
+                - url: "http://10.10.30.101:8500"
+          yakumo:
+            loadBalancer:
+              servers:
+                - url: "http://10.10.30.108:5000"
 
   - path: /etc/systemd/system/traefik.service
     content: |
