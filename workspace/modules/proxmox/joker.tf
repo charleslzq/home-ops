@@ -7,6 +7,9 @@ locals {
 }
 
 module "joker" {
+  depends_on = [
+    module.rayleigh
+  ]
   count = length(local.joker_nodes)
 
   source               = "./modules/gateway"
@@ -27,5 +30,4 @@ module "joker" {
   keepalive_router_id  = 3
   keepalive_virtual_ip = "10.10.30.110"
   keepalive_state      = local.joker_nodes[count.index].state
-  consul_token         = data.vault_generic_secret.joker_settings.data.consul_token
 }

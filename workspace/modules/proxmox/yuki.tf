@@ -30,6 +30,9 @@ module "vault_config" {
 }
 
 module "yuki" {
+  depends_on = [
+    module.rayleigh
+  ]
   count = length(local.vaults)
 
   source          = "./modules/cloud_init"

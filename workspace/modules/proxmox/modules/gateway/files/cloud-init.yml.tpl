@@ -25,6 +25,10 @@ write_files:
             rule: Host(`rayleigh.zenq.me`)
             tls: true
             service: rayleigh
+          roger:
+            rule: Host(`roger.zenq.me`)
+            tls: true
+            service: roger
           yakumo:
             rule: Host(`yakumo.zenq.me`)
             tls: true
@@ -40,6 +44,12 @@ write_files:
                 - url: "http://10.10.30.99:8500"
                 - url: "http://10.10.30.100:8500"
                 - url: "http://10.10.30.101:8500"
+          roger:
+            loadBalancer:
+              servers:
+                - url: "http://10.10.30.210:4646"
+                - url: "http://10.10.30.211:4646"
+                - url: "http://10.10.30.212:4646"
           yakumo:
             loadBalancer:
               servers:

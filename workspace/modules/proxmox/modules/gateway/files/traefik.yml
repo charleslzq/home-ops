@@ -17,8 +17,6 @@ providers:
     requireConsistent: true
     exposedByDefault: false
     defaultRule: "Host(`{{ .Name }}.zenq.me`)"
-    endpoint:
-      token: ${consul_token}
   file:
     watch: true
     directory: "/etc/traefik.d"
