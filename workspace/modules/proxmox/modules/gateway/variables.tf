@@ -70,3 +70,7 @@ variable "keepalive_state" {
 variable "keepalive_password" {
   type = string
 }
+
+variable "consul_token" {
+  type = string
+}

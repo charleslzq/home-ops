@@ -19,10 +19,6 @@ module "traefik_keepalive_config" {
   state     = var.keepalive_state
 }
 
-data "local_file" "traefik_config_file" {
-  filename = "${path.module}/files/traefik.yml"
-}
-
 module "gateway" {
   source = "../cloud_init"
 
@@ -45,7 +41,9 @@ module "gateway" {
       content_type = "text/cloud-config"
       content = templatefile("${path.module}/files/cloud-init.yml.tpl", {
         traefik_version = var.traefik_version
-        traefik_config  = indent(6, data.local_file.traefik_config_file.content)
+        traefik_config  = indent(6, templatefile("${path.module}/files/traefik.yml.tpl", {
+          consul_token = var.consul_token
+        }))
       })
       merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
     },
