@@ -27,6 +27,7 @@ module "vault_config" {
 
   vault_version = local.vault_version
   ip            = local.vaults[count.index].ip
+  consul_token  = data.vault_generic_secret.vault_settings.data.consul_token
 }
 
 module "yuki" {

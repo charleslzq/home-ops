@@ -5,3 +5,7 @@ variable "vault_version" {
 variable "ip" {
   type = string
 }
+
+variable "consul_token" {
+  type = string
+}

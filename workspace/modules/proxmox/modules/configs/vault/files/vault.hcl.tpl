@@ -9,6 +9,7 @@ storage "consul" {
   path         = "vault/"
   service      = "yuki"
   service_tags = "traefik.enable=true,traefik.http.routers.yuki.tls=true"
+  token        = "${consul_token}""
 }
 
 api_addr = "http://${ip}:8200"

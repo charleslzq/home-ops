@@ -22,3 +22,8 @@ advertise_addr = ${ip}
 auto_encrypt {
   allow_tls = true
 }
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+}
