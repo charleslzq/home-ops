@@ -38,23 +38,6 @@ write_files:
 
       [Install]
       WantedBy=multi-user.target
-  - path: /etc/consul.d/traefik.hcl
-    content: |
-      service {
-        name = "joker"
-        port = 8080
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.joker.tls=true"
-        ]
-        checks = [
-          {
-            http = "http://localhost:8080/ping"
-            interval = "10s"
-            timeout = "1s"
-          }
-        ]
-      }
 runcmd:
   - sudo cp /mnt/cifs/cloud-init/traefik/${traefik_version}/traefik /usr/local/bin/
   - sudo mkdir /etc/traefik.d/
