@@ -18,7 +18,7 @@ module "vault_consul_config" {
   cert           = local.vaults[count.index].cert
   key            = local.vaults[count.index].key
   ip             = local.vaults[count.index].ip
-  server_ip_list = local.server_ip_list
+  server_ip_list = local.consul_server_ip_list
 }
 
 module "vault_config" {

@@ -1,36 +1,26 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source = "telmate/proxmox"
-    }
-  }
-}
-
 data "vault_generic_secret" "consul_config" {
-  path = "secret/home/consul"
+  path = "secret/home/rayleigh"
 }
 
 locals {
-  servers        = jsondecode(nonsensitive(data.vault_generic_secret.consul_config.data.servers))
-  server_ip_list = local.servers.*.ip
+  consul_servers        = jsondecode(nonsensitive(data.vault_generic_secret.consul_config.data.servers))
+  consul_server_ip_list = local.consul_servers.*.ip
 }
 
 module "rayleigh" {
-  count = length(local.servers)
+  count = length(local.consul_servers)
 
-  source         = "./modules/consul_nomad"
+  source         = "./modules/consul_server"
   vm_name        = "rayleigh-${count.index + 1}"
-  proxmox_node   = local.servers[count.index].proxmox_node
+  proxmox_node   = local.consul_servers[count.index].proxmox_node
   consul_version = local.consul_version
-  nomad_version  = local.nomad_version
   cifs_config    = module.cifs.cloud_init_config
-  server_ip_list = local.server_ip_list
-  ip             = local.servers[count.index].ip
+  server_ip_list = local.consul_server_ip_list
+  ip             = local.consul_servers[count.index].ip
   gateway        = data.vault_generic_secret.consul_config.data.gateway
   encrypt_key    = data.vault_generic_secret.consul_config.data.encrypt_key
   ca_cert        = data.vault_generic_secret.consul_config.data.ca_cert
   ssh_ca_cert    = var.ssh_ca_cert
-  cert           = local.servers[count.index].cert
-  key            = local.servers[count.index].key
-  domain         = "rayleigh.zenq.me"
+  cert           = local.consul_servers[count.index].cert
+  key            = local.consul_servers[count.index].key
 }

@@ -10,10 +10,6 @@ variable "consul_version" {
   type = string
 }
 
-variable "domain" {
-  type = string
-}
-
 variable "ip" {
   type = string
 }
@@ -52,9 +48,5 @@ variable "server_ip_list" {
 }
 
 variable "cifs_config" {
-  type = string
-}
-
-variable "nomad_version" {
   type = string
 }

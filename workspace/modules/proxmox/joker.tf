@@ -22,7 +22,7 @@ module "joker" {
   cifs_config          = module.cifs.cloud_init_config
   consul_version       = local.consul_version
   traefik_version      = local.traefik_version
-  server_ip_list       = local.server_ip_list
+  server_ip_list       = local.consul_server_ip_list
   keepalive_password   = data.vault_generic_secret.joker_settings.data.keepalive_password
   keepalive_router_id  = 3
   keepalive_virtual_ip = "10.10.30.110"
