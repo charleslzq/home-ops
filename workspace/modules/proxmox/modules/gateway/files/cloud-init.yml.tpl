@@ -15,6 +15,17 @@ write_files:
             defaultCertificate:
               certFile: /etc/traefik.d/https/fullchain.pem
               keyFile: /etc/traefik.d/https/privkey.pem
+      http:
+        routers:
+          dashboard:
+            rule: Host(`joker.zenq.me`)
+            tls: true
+            service: dashboard
+        services:
+          dashboard:
+            loadBalancer:
+              servers:
+                - url: "http://127.0.0.1:8080"
 
   - path: /etc/systemd/system/traefik.service
     content: |
