@@ -10,6 +10,13 @@ module "traefik_consul_client" {
   encrypt_key    = var.encrypt_key
 }
 
+module "traefik_nomad_client" {
+  source = "../configs/nomad_client"
+
+  nomad_version = var.nomad_version
+  node_type     = "gateway"
+}
+
 module "traefik_keepalive_config" {
   source = "../configs/keepalived"
 
@@ -39,6 +46,11 @@ module "gateway" {
     {
       content_type = "text/cloud-config"
       content      = module.traefik_consul_client.cloud_init_config
+      merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
+    },
+    {
+      content_type = "text/cloud-config"
+      content      = module.traefik_nomad_client.cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     },
     {

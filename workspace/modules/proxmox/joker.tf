@@ -24,6 +24,7 @@ module "joker" {
   key                  = local.joker_nodes[count.index].key
   cifs_config          = module.cifs.cloud_init_config
   consul_version       = local.consul_version
+  nomad_version        = local.nomad_version
   traefik_version      = local.traefik_version
   server_ip_list       = local.consul_server_ip_list
   keepalive_password   = data.vault_generic_secret.joker_settings.data.keepalive_password
