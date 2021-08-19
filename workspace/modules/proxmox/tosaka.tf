@@ -2,10 +2,6 @@ data "vault_generic_secret" "default" {
   path = "secret/home/default"
 }
 
-data "vault_generic_secret" "tosaka_setting" {
-  path = "secret/home/tosaka"
-}
-
 locals {
   tosaka_virtual_ip = "10.10.30.235"
   tosaka_router_id  = 2
@@ -31,7 +27,7 @@ module "tosaka_keepalive_config" {
   source    = "./modules/configs/keepalived"
   ip        = local.tosaka_virtual_ip
   router_id = local.tosaka_router_id
-  password  = data.vault_generic_secret.tosaka_setting.data.keepalive_password
+  password  = data.vault_generic_secret.keepalived_passwords.data.tosaka
   state     = local.masters[count.index].state
 }
 
