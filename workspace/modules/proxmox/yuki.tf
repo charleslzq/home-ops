@@ -1,11 +1,14 @@
-data "vault_generic_secret" "vault_settings" {
-  path = "secret/home/yuki"
-}
-
 locals {
-  vaults           = jsondecode(nonsensitive(data.vault_generic_secret.vault_settings.data.vaults))
-  vault_virtual_ip = "10.10.30.120"
-  vault_router_id  = 2
+  vaults = [
+    {
+      ip           = "10.10.30.121"
+      proxmox_node = "avalon"
+    },
+    {
+      ip           = "10.10.30.122"
+      proxmox_node = "skypiea"
+    }
+  ]
 }
 
 module "vault_consul_config" {
