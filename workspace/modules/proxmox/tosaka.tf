@@ -1,7 +1,3 @@
-data "vault_generic_secret" "default" {
-  path = "secret/home/default"
-}
-
 locals {
   tosaka_virtual_ip = "10.10.30.235"
   tosaka_router_id  = 2

@@ -13,3 +13,7 @@ locals {
 data "vault_generic_secret" "keepalived_passwords" {
   path = "secret/home/keepalived"
 }
+
+data "vault_generic_secret" "default" {
+  path = "secret/home/default"
+}
