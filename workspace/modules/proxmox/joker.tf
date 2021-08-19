@@ -8,7 +8,8 @@ locals {
 
 module "joker" {
   depends_on = [
-    module.rayleigh
+    module.rayleigh,
+    module.roger,
   ]
   count = length(local.joker_nodes)
 
@@ -18,10 +19,6 @@ module "joker" {
   ip                   = local.joker_nodes[count.index].ip
   gateway              = "10.10.30.1"
   ssh_ca_cert          = var.ssh_ca_cert
-  encrypt_key          = data.vault_generic_secret.consul_config.data.encrypt_key
-  ca_cert              = data.vault_generic_secret.consul_config.data.ca_cert
-  cert                 = local.joker_nodes[count.index].cert
-  key                  = local.joker_nodes[count.index].key
   cifs_config          = module.cifs.cloud_init_config
   consul_version       = local.consul_version
   nomad_version        = local.nomad_version

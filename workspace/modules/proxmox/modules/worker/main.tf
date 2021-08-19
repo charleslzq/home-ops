@@ -3,11 +3,7 @@ module "worker_consul_client" {
 
   server_ip_list = var.server_ip_list
   ip             = var.ip
-  ca_cert        = var.ca_cert
-  cert           = var.cert
-  key            = var.key
   consul_version = var.consul_version
-  encrypt_key    = var.encrypt_key
 }
 
 module "worker_nomad_client" {

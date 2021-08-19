@@ -18,9 +18,5 @@ module "rayleigh" {
   server_ip_list = local.consul_server_ip_list
   ip             = local.consul_servers[count.index].ip
   gateway        = data.vault_generic_secret.consul_config.data.gateway
-  encrypt_key    = data.vault_generic_secret.consul_config.data.encrypt_key
-  ca_cert        = data.vault_generic_secret.consul_config.data.ca_cert
   ssh_ca_cert    = var.ssh_ca_cert
-  cert           = local.consul_servers[count.index].cert
-  key            = local.consul_servers[count.index].key
 }

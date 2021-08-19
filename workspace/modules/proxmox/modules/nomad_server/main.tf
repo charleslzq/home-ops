@@ -3,11 +3,7 @@ module "nomad_consul_client" {
 
   server_ip_list = var.server_ip_list
   ip             = var.ip
-  ca_cert        = var.ca_cert
-  cert           = var.cert
-  key            = var.key
   consul_version = var.consul_version
-  encrypt_key    = var.encrypt_key
 }
 
 module "nomad_server" {
@@ -32,7 +28,6 @@ module "nomad_server" {
       content_type = "text/cloud-config"
       content = templatefile("${path.module}/files/nomad-init.yml.tpl", {
         nomad_version = var.nomad_version
-        vault_token   = var.vault_token
       })
       merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
     }

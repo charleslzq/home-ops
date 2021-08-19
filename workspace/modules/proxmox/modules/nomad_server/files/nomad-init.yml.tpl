@@ -10,14 +10,6 @@ write_files:
         enabled          = true
         bootstrap_expect = 3
       }
-
-      vault {
-        enabled = true
-        address = "https://yuki.zenq.me"
-        create-from-role = "nomad-cluster"
-        token = "${vault_token}"
-        task_token_ttl = "1h"
-      }
   - path: /etc/systemd/system/nomad.service
     content: |
       [Unit]

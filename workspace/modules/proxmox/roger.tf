@@ -21,10 +21,5 @@ module "roger" {
   server_ip_list = local.consul_server_ip_list
   ip             = local.nomad_servers[count.index].ip
   gateway        = data.vault_generic_secret.consul_config.data.gateway
-  encrypt_key    = data.vault_generic_secret.consul_config.data.encrypt_key
-  ca_cert        = data.vault_generic_secret.consul_config.data.ca_cert
   ssh_ca_cert    = var.ssh_ca_cert
-  cert           = local.nomad_servers[count.index].cert
-  key            = local.nomad_servers[count.index].key
-  vault_token    = data.vault_generic_secret.nomad_config.data.vault_token
 }

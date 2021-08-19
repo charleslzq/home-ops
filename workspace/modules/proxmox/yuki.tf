@@ -13,10 +13,6 @@ module "vault_consul_config" {
 
   source         = "./modules/configs/consul_client"
   consul_version = local.consul_version
-  encrypt_key    = data.vault_generic_secret.consul_config.data.encrypt_key
-  ca_cert        = data.vault_generic_secret.consul_config.data.ca_cert
-  cert           = local.vaults[count.index].cert
-  key            = local.vaults[count.index].key
   ip             = local.vaults[count.index].ip
   server_ip_list = local.consul_server_ip_list
 }
