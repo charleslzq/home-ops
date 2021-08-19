@@ -55,3 +55,7 @@ variable "nomad_version" {
   type = string
 }
 
+variable "vault_token" {
+  type = string
+}
+

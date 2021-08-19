@@ -12,6 +12,11 @@ write_files:
           node_type = "${node_type}"
         }
       }
+
+      vault {
+        enabled = true
+        address = "https://yuki.zenq.me"
+      }
   - path: /etc/systemd/system/nomad.service
     content: |
       [Unit]

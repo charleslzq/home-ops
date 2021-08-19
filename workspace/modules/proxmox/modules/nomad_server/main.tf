@@ -32,6 +32,7 @@ module "nomad_server" {
       content_type = "text/cloud-config"
       content = templatefile("${path.module}/files/nomad-init.yml.tpl", {
         nomad_version = var.nomad_version
+        vault_token   = var.vault_token
       })
       merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
     }

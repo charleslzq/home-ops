@@ -26,4 +26,5 @@ module "roger" {
   ssh_ca_cert    = var.ssh_ca_cert
   cert           = local.nomad_servers[count.index].cert
   key            = local.nomad_servers[count.index].key
+  vault_token    = data.vault_generic_secret.nomad_config.data.vault_token
 }
