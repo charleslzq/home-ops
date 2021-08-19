@@ -8,3 +8,7 @@ locals {
   vault_version   = "1.8.1"
   traefik_version = "2.4.13"
 }
+
+data "vault_generic_secret" "keepalived_passwords" {
+  path = "secret/home/keepalived"
+}

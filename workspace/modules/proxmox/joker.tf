@@ -1,9 +1,16 @@
-data "vault_generic_secret" "joker_settings" {
-  path = "secret/home/joker"
-}
-
 locals {
-  joker_nodes = jsondecode(nonsensitive(data.vault_generic_secret.joker_settings.data.nodes))
+  joker_nodes = [
+    {
+      ip           = "10.10.30.111"
+      proxmox_node = "avalon"
+      state        = "MASTER"
+    },
+    {
+      ip           = "10.10.30.112"
+      proxmox_node = "skypiea"
+      state        = "BACKUP"
+    }
+  ]
 }
 
 module "joker" {
@@ -24,7 +31,7 @@ module "joker" {
   nomad_version        = local.nomad_version
   traefik_version      = local.traefik_version
   server_ip_list       = local.consul_server_ip_list
-  keepalive_password   = data.vault_generic_secret.joker_settings.data.keepalive_password
+  keepalive_password   = data.vault_generic_secret.keepalived_passwords.data.joker
   keepalive_router_id  = 3
   keepalive_virtual_ip = "10.10.30.110"
   keepalive_state      = local.joker_nodes[count.index].state
