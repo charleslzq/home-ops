@@ -1,9 +1,18 @@
-data "vault_generic_secret" "nomad_config" {
-  path = "secret/home/roger"
-}
-
 locals {
-  nomad_servers = jsondecode(nonsensitive(data.vault_generic_secret.nomad_config.data.servers))
+  nomad_servers = [
+    {
+      ip           = "10.10.30.210"
+      proxmox_node = "avalon"
+    },
+    {
+      ip           = "10.10.30.211"
+      proxmox_node = "skypiea"
+    },
+    {
+      ip           = "10.10.30.212"
+      proxmox_node = "skypiea"
+    }
+  ]
 }
 
 module "roger" {
