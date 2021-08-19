@@ -1,9 +1,21 @@
-data "vault_generic_secret" "yagami_settings" {
-  path = "secret/home/yagami"
-}
-
 locals {
-  classes = jsondecode(nonsensitive(data.vault_generic_secret.yagami_settings.data.classes))
+  classes = [
+    {
+      ip           = "10.10.30.50"
+      proxmox_node = "avalon"
+      name         = "2c"
+    },
+    {
+      ip           = "10.10.30.51"
+      proxmox_node = "avalon"
+      name         = "2d"
+    },
+    {
+      ip           = "10.10.30.52"
+      proxmox_node = "skypiea"
+      name         = "1d"
+    }
+  ]
 }
 
 module "yagami" {
