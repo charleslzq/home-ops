@@ -7,6 +7,7 @@ locals {
   nomad_version   = "1.1.3"
   vault_version   = "1.8.1"
   traefik_version = "2.4.13"
+  gateway         = "10.10.30.1"
 }
 
 data "vault_generic_secret" "keepalived_passwords" {

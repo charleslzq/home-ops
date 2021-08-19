@@ -1,9 +1,18 @@
-data "vault_generic_secret" "consul_config" {
-  path = "secret/home/rayleigh"
-}
-
 locals {
-  consul_servers        = jsondecode(nonsensitive(data.vault_generic_secret.consul_config.data.servers))
+  consul_servers = [
+    {
+      ip           = "10.10.30.99"
+      proxmox_node = "avalon"
+    },
+    {
+      ip           = "10.10.30.100"
+      proxmox_node = "skypiea"
+    },
+    {
+      ip           = "10.10.30.101"
+      proxmox_node = "skypiea"
+    },
+  ]
   consul_server_ip_list = local.consul_servers.*.ip
 }
 
@@ -17,6 +26,6 @@ module "rayleigh" {
   cifs_config    = module.cifs.cloud_init_config
   server_ip_list = local.consul_server_ip_list
   ip             = local.consul_servers[count.index].ip
-  gateway        = data.vault_generic_secret.consul_config.data.gateway
+  gateway        = local.gateway
   ssh_ca_cert    = var.ssh_ca_cert
 }

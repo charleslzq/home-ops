@@ -20,6 +20,6 @@ module "roger" {
   cifs_config    = module.cifs.cloud_init_config
   server_ip_list = local.consul_server_ip_list
   ip             = local.nomad_servers[count.index].ip
-  gateway        = data.vault_generic_secret.consul_config.data.gateway
+  gateway        = local.gateway
   ssh_ca_cert    = var.ssh_ca_cert
 }
