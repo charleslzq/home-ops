@@ -7,7 +7,6 @@ then
     ssh-keygen -t rsa-sha2-512 -b 4096 -C "public@ericcharleslzq.com"
 fi
 
-sudo ntpdate ntp.ubuntu.com
 CERT_FILE="/home/vagrant/.ssh/id_rsa-cert.pub"
 if [ -f $CERT_FILE ]
 then
