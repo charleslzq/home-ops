@@ -9,6 +9,3 @@ bootstrap_expect = ${server_count}
 ui = true
 client_addr = "0.0.0.0"
 advertise_addr = ${ip}
-auto_encrypt {
-  allow_tls = true
-}
