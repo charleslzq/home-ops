@@ -48,6 +48,7 @@ resource "null_resource" "nomad_tls_server_config" {
     certificate = vault_pki_secret_backend_cert.nomad_server[count.index].certificate
     private_key = vault_pki_secret_backend_cert.nomad_server[count.index].private_key
     ca_cert     = vault_pki_secret_backend_cert.nomad_server[count.index].issuing_ca
+    file_content = data.local_file.nomad_tls_config.content
   }
   connection {
     type        = "ssh"
@@ -90,6 +91,7 @@ resource "null_resource" "nomad_tls_client_config" {
     certificate = vault_pki_secret_backend_cert.nomad_client[count.index].certificate
     private_key = vault_pki_secret_backend_cert.nomad_client[count.index].private_key
     ca_cert     = vault_pki_secret_backend_cert.nomad_client[count.index].issuing_ca
+    file_content = data.local_file.nomad_tls_config.content
   }
   connection {
     type        = "ssh"

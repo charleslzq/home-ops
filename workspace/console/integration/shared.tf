@@ -35,6 +35,7 @@ resource "vault_pki_secret_backend_intermediate_cert_request" "intermediate" {
 
 resource "vault_pki_secret_backend_root_sign_intermediate" "intermediate" {
   depends_on = [
+    vault_pki_secret_backend_root_cert.root,
     vault_pki_secret_backend_intermediate_cert_request.intermediate
   ]
   backend = vault_pki_secret_backend.pki.path
@@ -45,6 +46,10 @@ resource "vault_pki_secret_backend_root_sign_intermediate" "intermediate" {
 }
 
 resource "vault_pki_secret_backend_intermediate_set_signed" "intermediate" {
+  depends_on = [
+    vault_pki_secret_backend_intermediate_cert_request.intermediate
+  ]
+
   backend     = vault_pki_secret_backend.pki_int.path
   certificate = vault_pki_secret_backend_root_sign_intermediate.intermediate.certificate
 }
