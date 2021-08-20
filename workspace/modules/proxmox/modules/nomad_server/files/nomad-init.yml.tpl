@@ -4,6 +4,7 @@ users:
 write_files:
   - path: /etc/nomad.d/nomad.hcl
     content: |
+      datacenter = "roger"
       data_dir = "/opt/nomad/data"
 
       server {
