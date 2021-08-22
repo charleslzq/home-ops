@@ -1,6 +1,18 @@
-users:
-  - name: nomad
-    system: true
+#cloud-config
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64] https://download.docker.com/linux/ubuntu hirsute stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
 write_files:
   - path: /etc/nomad.d/nomad.hcl
     content: |
@@ -28,8 +40,6 @@ write_files:
       After=consul.service
 
       [Service]
-      User=nomad
-      Group=nomad
       ExecReload=/bin/kill -HUP $MAINPID
       ExecStart=/usr/local/bin/nomad agent -config /etc/nomad.d/
       KillMode=process
@@ -62,10 +72,10 @@ write_files:
 runcmd:
   - sudo cp /mnt/cifs/cloud-init/nomad/${nomad_version}/nomad /usr/local/bin/
   - cd /usr/local/bin/
-  - sudo chown nomad:nomad nomad
   - sudo chmod +x nomad
   - sudo mkdir -p /opt/nomad/data
-  - sudo chown -R nomad:nomad /opt/nomad/data
-  - sudo chmod -R 775 /opt/nomad/data
   - sudo systemctl enable nomad
   - sudo systemctl start nomad
+  - sudo systemctl start docker
+  - sudo systemctl enable docker
+  - sudo addgroup ubuntu docker
