@@ -14,10 +14,11 @@ locals {
 module "vault_consul_config" {
   count = length(local.vaults)
 
-  source         = "./modules/configs/consul_client"
-  consul_version = local.consul_version
-  ip             = local.vaults[count.index].ip
-  server_ip_list = local.consul_server_ip_list
+  source                  = "./modules/configs/consul_client"
+  consul_version          = local.consul_version
+  consul_template_version = local.consul_template_version
+  ip                      = local.vaults[count.index].ip
+  server_ip_list          = local.consul_server_ip_list
 }
 
 module "vault_config" {

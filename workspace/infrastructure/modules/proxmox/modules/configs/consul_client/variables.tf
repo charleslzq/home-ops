@@ -2,6 +2,10 @@ variable "consul_version" {
   type = string
 }
 
+variable "consul_template_version" {
+  type = string
+}
+
 variable "ip" {
   type = string
 }

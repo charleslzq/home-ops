@@ -1,9 +1,10 @@
 module "worker_consul_client" {
   source = "../configs/consul_client"
 
-  server_ip_list = var.server_ip_list
-  ip             = var.ip
-  consul_version = var.consul_version
+  server_ip_list          = var.server_ip_list
+  ip                      = var.ip
+  consul_version          = var.consul_version
+  consul_template_version = var.consul_template_version
 }
 
 module "worker_nomad_client" {
