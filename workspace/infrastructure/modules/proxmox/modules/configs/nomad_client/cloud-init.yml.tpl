@@ -24,6 +24,10 @@ write_files:
         meta = {
           node_type = "${node_type}"
         }
+        host_volume "cifs" {
+          path      = "/mnt/cifs/nomad/"
+          read_only = false
+        }
       }
   - path: /etc/systemd/system/nomad.service
     content: |
