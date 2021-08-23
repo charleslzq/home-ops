@@ -10,10 +10,10 @@ module "worker_nomad_client" {
   source = "../configs/nomad_client"
 
   nomad_version = var.nomad_version
-  node_type     = "worker"
+  node_type     = var.node_type
 }
 
-module "gateway" {
+module "worker" {
   source = "../cloud_init"
 
   vm_name         = var.vm_name
@@ -37,6 +37,6 @@ module "gateway" {
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
-  memory    = 4096
-  disk_size = "50G"
+  memory    = var.memory
+  disk_size = var.disk_size
 }

@@ -45,9 +45,9 @@ data "local_file" "nomad_tls_config" {
 resource "null_resource" "nomad_tls_server_config" {
   count = length(local.nomad_servers)
   triggers = {
-    certificate = vault_pki_secret_backend_cert.nomad_server[count.index].certificate
-    private_key = vault_pki_secret_backend_cert.nomad_server[count.index].private_key
-    ca_cert     = vault_pki_secret_backend_cert.nomad_server[count.index].issuing_ca
+    certificate  = vault_pki_secret_backend_cert.nomad_server[count.index].certificate
+    private_key  = vault_pki_secret_backend_cert.nomad_server[count.index].private_key
+    ca_cert      = vault_pki_secret_backend_cert.nomad_server[count.index].issuing_ca
     file_content = data.local_file.nomad_tls_config.content
   }
   connection {
@@ -88,9 +88,9 @@ resource "null_resource" "nomad_tls_server_config" {
 resource "null_resource" "nomad_tls_client_config" {
   count = length(local.nomad_clients)
   triggers = {
-    certificate = vault_pki_secret_backend_cert.nomad_client[count.index].certificate
-    private_key = vault_pki_secret_backend_cert.nomad_client[count.index].private_key
-    ca_cert     = vault_pki_secret_backend_cert.nomad_client[count.index].issuing_ca
+    certificate  = vault_pki_secret_backend_cert.nomad_client[count.index].certificate
+    private_key  = vault_pki_secret_backend_cert.nomad_client[count.index].private_key
+    ca_cert      = vault_pki_secret_backend_cert.nomad_client[count.index].issuing_ca
     file_content = data.local_file.nomad_tls_config.content
   }
   connection {

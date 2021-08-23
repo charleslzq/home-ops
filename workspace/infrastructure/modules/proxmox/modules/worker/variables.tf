@@ -34,3 +34,18 @@ variable "server_ip_list" {
 variable "nomad_version" {
   type = string
 }
+
+variable "node_type" {
+  type    = string
+  default = "worker"
+}
+
+variable "memory" {
+  type    = number
+  default = 4096
+}
+
+variable "disk_size" {
+  type    = string
+  default = "50G"
+}

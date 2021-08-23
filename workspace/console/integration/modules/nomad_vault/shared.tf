@@ -1,15 +1,14 @@
-locals {
-  nomad_servers = [
-    "10.10.30.210",
-    "10.10.30.211",
-    "10.10.30.212",
-  ]
-  nomad_clients = [
-    "10.10.30.111",
-    "10.10.30.112",
-    "10.10.30.50",
-    "10.10.30.51",
-    "10.10.30.52",
-  ]
+data "consul_service" "nomad_server" {
+  name       = "nomad"
+  datacenter = "rayleigh"
 }
 
+data "consul_service" "nomad_client" {
+  name       = "nomad-client"
+  datacenter = "rayleigh"
+}
+
+locals {
+  nomad_servers = distinct(data.consul_service.nomad_server.service.*.node_address)
+  nomad_clients = distinct(data.consul_service.nomad_client.service.*.node_address)
+}
