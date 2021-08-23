@@ -15,7 +15,7 @@ job "backup" {
     }
 
     constraint {
-      attribute = "${meta.node_type}"
+      attribute = "$${meta.node_type}"
       value     = "gateway"
     }
 
@@ -36,19 +36,7 @@ job "backup" {
 
       template {
         data = <<EOH
-#!/bin/bash
-
-set -e
-
-FILE=consul-$(date +%y%m%d%H%M%S).snap
-TARGET=/mnt/cifs/backup/consul
-if [ ! -f $TARGET ]
-then
-    mkdir -p $TARGET
-fi
-
-consul snapshot save $FILE
-sudo mv $FILE $TARGET
+${backup_script}
 EOH
         destination   = "local/backup_consul.sh"
         change_mode   = "noop"
