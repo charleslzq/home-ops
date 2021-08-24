@@ -1,4 +1,4 @@
-job "traefik" {
+job "joker" {
   datacenters = ["roger"]
   type        = "system"
 
@@ -46,6 +46,10 @@ job "traefik" {
         ]
       }
 
+      vault {
+        policies = ["${policy}"]
+      }
+
       template {
         data = <<EOF
 global:
@@ -80,6 +84,24 @@ EOF
         destination = "local/traefik.yml"
         left_delimiter = "^^"
         right_delimiter = "$$"
+      }
+
+      template {
+        data        = <<EOF
+{{ with secret "https/data/me/zenq" }}
+{{ .Data.data.fullchain }}
+{{ end }}
+EOF
+        destination = "local/https/fullchain.pem"
+      }
+
+      template {
+        data        = <<EOF
+{{ with secret "https/data/me/zenq" }}
+{{ .Data.data.privkey }}
+{{ end }}
+EOF
+        destination = "local/https/privkey.pem"
       }
 
       resources {
