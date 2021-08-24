@@ -1,7 +1,3 @@
-locals {
-  vault_address = "http://10.10.30.121:8200"
-}
-
 resource "vault_pki_secret_backend" "pki" {
   path                  = "pki"
   max_lease_ttl_seconds = 87600 * 3600

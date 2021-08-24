@@ -27,6 +27,7 @@ data "consul_service" "consul" {
 }
 
 locals {
+  vault_address  = "http://10.10.30.120:8200"
   nomad_servers  = distinct(data.consul_service.nomad_server.service.*.node_address)
   nomad_clients  = distinct(data.consul_service.nomad_client.service.*.node_address)
   vaults         = distinct(data.consul_service.vault.service.*.node_address)
