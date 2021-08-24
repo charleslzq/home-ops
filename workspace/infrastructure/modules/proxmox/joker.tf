@@ -2,13 +2,25 @@ locals {
   joker_nodes = [
     {
       ip           = "10.10.30.111"
-      proxmox_node = "avalon"
+      proxmox_node = "avalon",
+      state        = "MASTER",
     },
     {
       ip           = "10.10.30.112"
-      proxmox_node = "skypiea"
+      proxmox_node = "skypiea",
+      state        = "BACKUP",
     }
   ]
+}
+
+module "traefik_keepalive_config" {
+  count  = length(local.joker_nodes)
+  source = "./modules/configs/keepalived"
+
+  ip        = "10.10.30.110"
+  router_id = "110"
+  password  = data.vault_generic_secret.keepalived_passwords.data.joker
+  state     = local.joker_nodes[count.index].state
 }
 
 module "joker" {
@@ -32,4 +44,9 @@ module "joker" {
   node_type               = "gateway"
   memory                  = 2048
   disk_size               = "20G"
+  additional_cloud_init_config = [{
+    content_type = "text/cloud-config"
+    content      = module.traefik_keepalive_config[count.index].cloud_init_config
+    merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
+  }]
 }

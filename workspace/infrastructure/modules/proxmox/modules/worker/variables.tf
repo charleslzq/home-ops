@@ -53,3 +53,12 @@ variable "disk_size" {
   type    = string
   default = "50G"
 }
+
+variable "additional_cloud_init_config" {
+  type = list(object({
+    content_type = string
+    content      = string
+    merge_type   = string
+  }))
+  default = []
+}
