@@ -96,14 +96,14 @@ locals {
 }
 
 resource "null_resource" "nomad_vault_server_config" {
-  count = length(local.nomad_servers)
+  count = length(var.nomad_servers)
   triggers = {
     file_content = local.nomad_vault_server_config
   }
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = local.nomad_servers[count.index]
+    host        = var.nomad_servers[count.index]
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }
@@ -120,7 +120,7 @@ resource "null_resource" "nomad_vault_server_config" {
 }
 
 resource "null_resource" "nomad_vault_client_config" {
-  count = length(local.nomad_clients)
+  count = length(var.nomad_clients)
   triggers = {
     file_content = local.nomad_vault_client_config
   }
@@ -128,7 +128,7 @@ resource "null_resource" "nomad_vault_client_config" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = local.nomad_clients[count.index]
+    host        = var.nomad_clients[count.index]
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }

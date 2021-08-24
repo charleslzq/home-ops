@@ -9,7 +9,7 @@ resource "vault_pki_secret_backend_role" "nomad" {
 }
 
 resource "vault_pki_secret_backend_cert" "nomad_server" {
-  count = length(local.nomad_servers)
+  count = length(var.nomad_servers)
 
   depends_on = [
     vault_pki_secret_backend_role.nomad
@@ -24,7 +24,7 @@ resource "vault_pki_secret_backend_cert" "nomad_server" {
 }
 
 resource "vault_pki_secret_backend_cert" "nomad_client" {
-  count = length(local.nomad_clients)
+  count = length(var.nomad_clients)
 
   depends_on = [
     vault_pki_secret_backend_role.nomad
@@ -43,7 +43,7 @@ data "local_file" "nomad_tls_config" {
 }
 
 resource "null_resource" "nomad_tls_server_config" {
-  count = length(local.nomad_servers)
+  count = length(var.nomad_servers)
   triggers = {
     certificate  = vault_pki_secret_backend_cert.nomad_server[count.index].certificate
     private_key  = vault_pki_secret_backend_cert.nomad_server[count.index].private_key
@@ -53,7 +53,7 @@ resource "null_resource" "nomad_tls_server_config" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = local.nomad_servers[count.index]
+    host        = var.nomad_servers[count.index]
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }
@@ -86,7 +86,7 @@ resource "null_resource" "nomad_tls_server_config" {
 }
 
 resource "null_resource" "nomad_tls_client_config" {
-  count = length(local.nomad_clients)
+  count = length(var.nomad_clients)
   triggers = {
     certificate  = vault_pki_secret_backend_cert.nomad_client[count.index].certificate
     private_key  = vault_pki_secret_backend_cert.nomad_client[count.index].private_key
@@ -96,7 +96,7 @@ resource "null_resource" "nomad_tls_client_config" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = local.nomad_clients[count.index]
+    host        = var.nomad_clients[count.index]
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }

@@ -10,7 +10,7 @@ terraform {
 provider "consul" {}
 
 provider "consul" {
-  alias   = "home_consul"
+  alias   = "home"
   address = "http://10.10.30.100:8500"
 }
 
