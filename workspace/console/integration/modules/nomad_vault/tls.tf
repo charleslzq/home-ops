@@ -8,47 +8,43 @@ resource "vault_pki_secret_backend_role" "nomad" {
   allow_subdomains = true
 }
 
-resource "vault_pki_secret_backend_cert" "nomad_server" {
-  count = length(var.nomad_servers)
-
-  depends_on = [
-    vault_pki_secret_backend_role.nomad
-  ]
-  backend = var.vault_int_ca_path
-
-  name        = vault_pki_secret_backend_role.nomad.name
-  common_name = "server.global.nomad"
-  alt_names   = ["localhost"]
-  ttl         = "24h"
-  ip_sans     = ["127.0.0.1"]
-}
-
-resource "vault_pki_secret_backend_cert" "nomad_client" {
-  count = length(var.nomad_clients)
-
-  depends_on = [
-    vault_pki_secret_backend_role.nomad
-  ]
-  backend = var.vault_int_ca_path
-
-  name        = vault_pki_secret_backend_role.nomad.name
-  common_name = "client.global.nomad"
-  alt_names   = ["localhost"]
-  ttl         = "24h"
-  ip_sans     = ["127.0.0.1"]
-}
-
 data "local_file" "nomad_tls_config" {
   filename = "${path.module}/files/tls.hcl"
+}
+
+data "local_file" "nomad_server_crt" {
+  filename = "${path.module}/files/server/agent.crt.tpl"
+}
+
+data "local_file" "nomad_server_key" {
+  filename = "${path.module}/files/server/agent.key.tpl"
+}
+
+data "local_file" "nomad_server_ca" {
+  filename = "${path.module}/files/server/ca.crt.tpl"
+}
+
+data "local_file" "nomad_client_crt" {
+  filename = "${path.module}/files/client/agent.crt.tpl"
+}
+
+data "local_file" "nomad_client_key" {
+  filename = "${path.module}/files/client/agent.key.tpl"
+}
+
+data "local_file" "nomad_client_ca" {
+  filename = "${path.module}/files/client/ca.crt.tpl"
+}
+
+data "local_file" "consul_template_config" {
+  filename = "${path.module}/files/consul_template.hcl"
 }
 
 resource "null_resource" "nomad_tls_server_config" {
   count = length(var.nomad_servers)
   triggers = {
-    certificate  = vault_pki_secret_backend_cert.nomad_server[count.index].certificate
-    private_key  = vault_pki_secret_backend_cert.nomad_server[count.index].private_key
-    ca_cert      = vault_pki_secret_backend_cert.nomad_server[count.index].issuing_ca
-    file_content = data.local_file.nomad_tls_config.content
+    tls_config      = data.local_file.nomad_tls_config.content
+    template_config = data.local_file.consul_template_config.content
   }
   connection {
     type        = "ssh"
@@ -62,25 +58,32 @@ resource "null_resource" "nomad_tls_server_config" {
     destination = "~/tls.hcl"
   }
   provisioner "file" {
-    content     = vault_pki_secret_backend_cert.nomad_server[count.index].issuing_ca
-    destination = "~/ca.crt"
+    content     = data.local_file.nomad_server_crt.content
+    destination = "~/agent.crt.tpl"
   }
   provisioner "file" {
-    content     = vault_pki_secret_backend_cert.nomad_server[count.index].certificate
-    destination = "~/agent.crt"
+    content     = data.local_file.nomad_server_key.content
+    destination = "~/agent.key.tpl"
   }
   provisioner "file" {
-    content     = vault_pki_secret_backend_cert.nomad_server[count.index].private_key
-    destination = "~/agent.key"
+    content     = data.local_file.nomad_server_ca.content
+    destination = "~/ca.crt.tpl"
+  }
+  provisioner "file" {
+    content     = data.local_file.consul_template_config.content
+    destination = "~/20.nomad.hcl"
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo rm -rf /opt/nomad/agent-certs/",
       "sudo mkdir -p /opt/nomad/agent-certs/",
-      "sudo mv ~/*.crt /opt/nomad/agent-certs/",
-      "sudo mv ~/*.key /opt/nomad/agent-certs/",
+      "sudo chown consul:consul /opt/nomad/agent-certs",
+      "sudo chmod 755 /opt/nomad/agent-certs/",
+      "sudo mkdir -p /opt/nomad/templates/",
       "sudo mv ~/tls.hcl /etc/nomad.d/",
-      "sudo systemctl restart nomad"
+      "sudo mv ~/20.nomad.hcl /etc/consul_template.d/",
+      "sudo mv ~/*.tpl /opt/nomad/templates",
+      "sudo systemctl restart consul_template",
+      "sudo systemctl restart nomad",
     ]
   }
 }
@@ -88,10 +91,8 @@ resource "null_resource" "nomad_tls_server_config" {
 resource "null_resource" "nomad_tls_client_config" {
   count = length(var.nomad_clients)
   triggers = {
-    certificate  = vault_pki_secret_backend_cert.nomad_client[count.index].certificate
-    private_key  = vault_pki_secret_backend_cert.nomad_client[count.index].private_key
-    ca_cert      = vault_pki_secret_backend_cert.nomad_client[count.index].issuing_ca
-    file_content = data.local_file.nomad_tls_config.content
+    tls_config      = data.local_file.nomad_tls_config.content
+    template_config = data.local_file.consul_template_config.content
   }
   connection {
     type        = "ssh"
@@ -105,25 +106,32 @@ resource "null_resource" "nomad_tls_client_config" {
     destination = "~/tls.hcl"
   }
   provisioner "file" {
-    content     = vault_pki_secret_backend_cert.nomad_client[count.index].issuing_ca
-    destination = "~/ca.crt"
+    content     = data.local_file.nomad_client_crt.content
+    destination = "~/agent.crt.tpl"
   }
   provisioner "file" {
-    content     = vault_pki_secret_backend_cert.nomad_client[count.index].certificate
-    destination = "~/agent.crt"
+    content     = data.local_file.nomad_client_key.content
+    destination = "~/agent.key.tpl"
   }
   provisioner "file" {
-    content     = vault_pki_secret_backend_cert.nomad_client[count.index].private_key
-    destination = "~/agent.key"
+    content     = data.local_file.nomad_client_ca.content
+    destination = "~/ca.crt.tpl"
+  }
+  provisioner "file" {
+    content     = data.local_file.consul_template_config.content
+    destination = "~/20.nomad.hcl"
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo rm -rf /opt/nomad/agent-certs/",
       "sudo mkdir -p /opt/nomad/agent-certs/",
-      "sudo mv ~/*.crt /opt/nomad/agent-certs/",
-      "sudo mv ~/*.key /opt/nomad/agent-certs/",
+      "sudo chown consul:consul /opt/nomad/agent-certs",
+      "sudo chmod 755 /opt/nomad/agent-certs/",
+      "sudo mkdir -p /opt/nomad/templates/",
       "sudo mv ~/tls.hcl /etc/nomad.d/",
-      "sudo systemctl restart nomad"
+      "sudo mv ~/20.nomad.hcl /etc/consul_template.d/",
+      "sudo mv ~/*.tpl /opt/nomad/templates",
+      "sudo systemctl restart consul_template",
+      "sudo systemctl restart nomad",
     ]
   }
 }

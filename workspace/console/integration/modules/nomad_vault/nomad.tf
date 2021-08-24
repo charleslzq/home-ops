@@ -85,12 +85,12 @@ resource "vault_token_auth_backend_role" "nomad_cluster" {
 }
 
 locals {
-  nomad_vault_server_config = templatefile("${path.module}/files/vault.server.hcl.tpl", {
+  nomad_vault_server_config = templatefile("${path.module}/files/server/vault.hcl.tpl", {
     vault_address    = var.vault_address
     vault_token      = vault_token.nomad_server.client_token
     create_from_role = vault_token_auth_backend_role.nomad_cluster.role_name
   })
-  nomad_vault_client_config = templatefile("${path.module}/files/vault.client.hcl.tpl", {
+  nomad_vault_client_config = templatefile("${path.module}/files/client/vault.hcl.tpl", {
     vault_address = var.vault_address
   })
 }

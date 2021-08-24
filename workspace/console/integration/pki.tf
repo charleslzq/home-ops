@@ -1,5 +1,5 @@
 locals {
-  vault_address = "https://yuki.zenq.me"
+  vault_address = "http://10.10.30.121:8200"
 }
 
 resource "vault_pki_secret_backend" "pki" {
