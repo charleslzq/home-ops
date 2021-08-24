@@ -1,4 +1,4 @@
-job "backup" {
+job "backup-daily" {
   datacenters = ["roger"]
   type        = "batch"
   periodic {
