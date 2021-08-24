@@ -20,10 +20,7 @@ job "joker" {
 
     service {
       name = "joker"
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.joker.tls=true"
-      ]
+      tags = ["traefik.enable=true"]
 
       port = "http"
 
@@ -88,6 +85,8 @@ entryPoints:
           scheme: https
   websecure:
     address: ":443"
+    http:
+      tls: true
 EOF
         destination = "local/traefik.yml"
         left_delimiter = "^^"
