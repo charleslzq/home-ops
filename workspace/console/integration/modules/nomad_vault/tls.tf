@@ -83,7 +83,6 @@ resource "null_resource" "nomad_tls_server_config" {
       "sudo mv ~/20.nomad.hcl /etc/consul_template.d/",
       "sudo mv ~/*.tpl /opt/nomad/templates",
       "sudo systemctl restart consul_template",
-      "sudo systemctl restart nomad",
     ]
   }
 }
@@ -131,7 +130,6 @@ resource "null_resource" "nomad_tls_client_config" {
       "sudo mv ~/20.nomad.hcl /etc/consul_template.d/",
       "sudo mv ~/*.tpl /opt/nomad/templates",
       "sudo systemctl restart consul_template",
-      "sudo systemctl restart nomad",
     ]
   }
 }

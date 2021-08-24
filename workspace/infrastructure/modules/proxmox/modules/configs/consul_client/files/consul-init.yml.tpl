@@ -44,8 +44,6 @@ write_files:
       ConditionFileNotEmpty=/etc/consul_template.d/00.consul.hcl
 
       [Service]
-      User=consul
-      Group=consul
       ExecStart=/usr/local/bin/consul-template -config=/etc/consul_template.d/
       ExecReload=/bin/kill -HUP $MAINPID
       ExecStop=/bin/kill -INT $MAINPID

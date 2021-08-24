@@ -16,17 +16,19 @@ template {
 
   # This is the optional command to run when the template is rendered. The
   # command will only run if the resulting template changes.
-//  command     = "systemctl reload nomad"
+  command     = "systemctl reload nomad"
 }
 
 template {
   source      = "/opt/nomad/templates/agent.key.tpl"
   destination = "/opt/nomad/agent-certs/agent.key"
   perms       = 0755
+  command     = "systemctl reload nomad"
 }
 
 template {
   source      = "/opt/nomad/templates/ca.crt.tpl"
   destination = "/opt/nomad/agent-certs/ca.crt"
   perms       = 0755
+  command     = "systemctl reload nomad"
 }
