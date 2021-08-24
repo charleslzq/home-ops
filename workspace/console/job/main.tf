@@ -8,3 +8,14 @@ resource "nomad_job" "backup" {
     enabled = true
   }
 }
+
+resource "nomad_job" "traefik" {
+  jobspec = templatefile("${path.module}/spec/traefik.hcl.tpl", {
+    traefik_version = "2.5.1"
+  })
+  purge_on_destroy = true
+
+  hcl2 {
+    enabled = true
+  }
+}
