@@ -25,6 +25,8 @@ job "joker" {
         "traefik.http.routers.joker.tls=true"
       ]
 
+      port = "http"
+
       check {
         name     = "alive"
         type     = "tcp"
@@ -79,6 +81,11 @@ providers:
 entryPoints:
   web:
     address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
   websecure:
     address: ":443"
 EOF
