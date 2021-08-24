@@ -43,6 +43,7 @@ job "joker" {
 
         volumes = [
           "local/traefik.yml:/etc/traefik/traefik.yml",
+          "local/https:/etc/traefik/https"
         ]
       }
 
