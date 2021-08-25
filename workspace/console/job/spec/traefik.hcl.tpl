@@ -42,7 +42,7 @@ job "joker" {
 
         volumes = [
           "local/traefik.yml:/etc/traefik/traefik.yml",
-          "local/https:/etc/traefik/https"
+          "secrets/https:/etc/traefik/https"
         ]
       }
 
@@ -99,7 +99,7 @@ EOF
 {{ .Data.data.fullchain }}
 {{ end }}
 EOF
-        destination = "local/https/fullchain.pem"
+        destination = "secrets/https/fullchain.pem"
       }
 
       template {
@@ -108,7 +108,7 @@ EOF
 {{ .Data.data.privkey }}
 {{ end }}
 EOF
-        destination = "local/https/privkey.pem"
+        destination = "secrets/https/privkey.pem"
       }
 
       resources {

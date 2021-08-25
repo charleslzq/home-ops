@@ -7,6 +7,9 @@ job "odysseus" {
       port "http" {
         to = 22300
       }
+      port "db" {
+        to = 5432
+      }
     }
 
     service {
@@ -34,6 +37,37 @@ job "odysseus" {
       config {
         image = "joplin/server:latest"
         ports = ["http"]
+      }
+
+      resources {
+        cpu    = 100
+        memory = 256
+      }
+    }
+
+    task "db" {
+      driver = "docker"
+
+      config {
+        image = "postgres:latest"
+        ports = ["db"]
+      }
+
+      env {
+        POSTGRES_USER = "odysseus"
+        POSTGRES_DB = "odysseus"
+      }
+
+      vault {
+        policies = ["${policy}"]
+      }
+
+      template {
+        data = <<EOH
+POSTGRES_PASSWORD="{{with secret "database/data/postgres/odysseus"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
       }
 
       resources {
