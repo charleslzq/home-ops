@@ -29,6 +29,10 @@ write_files:
           read_only = false
         }
       }
+
+      acl {
+        enabled = true
+      }
   - path: /etc/systemd/system/nomad.service
     content: |
       [Unit]

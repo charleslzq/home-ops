@@ -11,6 +11,10 @@ write_files:
         enabled          = true
         bootstrap_expect = 3
       }
+
+      acl {
+        enabled = true
+      }
   - path: /etc/systemd/system/nomad.service
     content: |
       [Unit]
