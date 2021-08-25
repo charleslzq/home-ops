@@ -42,7 +42,7 @@ module "joker" {
   proxmox_node            = local.joker_nodes[count.index].proxmox_node
   ip                      = local.joker_nodes[count.index].ip
   node_type               = "gateway"
-  memory                  = 2048
+  memory                  = 4096
   disk_size               = "20G"
   additional_cloud_init_config = [{
     content_type = "text/cloud-config"

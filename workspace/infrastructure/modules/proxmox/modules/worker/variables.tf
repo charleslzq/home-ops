@@ -44,9 +44,19 @@ variable "node_type" {
   default = "worker"
 }
 
+variable "cores" {
+  type    = number
+  default = 2
+}
+
+variable "sockets" {
+  type    = string
+  default = "2"
+}
+
 variable "memory" {
   type    = number
-  default = 4096
+  default = 8192
 }
 
 variable "disk_size" {
