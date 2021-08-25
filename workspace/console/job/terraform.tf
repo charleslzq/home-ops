@@ -24,18 +24,18 @@ provider "vault" {
 
 // manually bootstrap acl and configure vault nomad engine
 resource "vault_nomad_secret_role" "terraform" {
-  backend   = "nomad"
-  role      = "terraform"
-  type      = "management"
+  backend = "nomad"
+  role    = "terraform"
+  type    = "management"
 }
 
 data "vault_nomad_access_token" "token" {
-  backend = "nomad"
-  role    = vault_nomad_secret_role.terraform.role
+  backend    = "nomad"
+  role       = vault_nomad_secret_role.terraform.role
   depends_on = [vault_nomad_secret_role.terraform]
 }
 
 provider "nomad" {
-  address = "http://10.10.30.210:4646"
-  secret_id  = data.vault_nomad_access_token.token.secret_id
+  address   = "http://10.10.30.210:4646"
+  secret_id = data.vault_nomad_access_token.token.secret_id
 }
