@@ -28,6 +28,10 @@ write_files:
           path      = "/mnt/cifs/nomad/"
           read_only = false
         }
+        host_volume "host" {
+          path      = "/opt/nomad/volume/"
+          read_only = false
+        }
       }
 
       acl {
@@ -82,6 +86,7 @@ runcmd:
   - cd /usr/local/bin/
   - sudo chmod +x nomad
   - sudo mkdir -p /opt/nomad/data
+  - sudo mkdir -p /opt/nomad/volume
   - sudo systemctl enable nomad
   - sudo systemctl start nomad
   - sudo systemctl start docker
