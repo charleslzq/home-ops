@@ -38,8 +38,8 @@ module "worker" {
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ], var.additional_cloud_init_config)
-  cores = var.cores
-  sockets = var.sockets
+  cores     = var.cores
+  sockets   = var.sockets
   memory    = var.memory
   disk_size = var.disk_size
 }

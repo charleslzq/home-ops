@@ -25,5 +25,6 @@ module "consul_server" {
       merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
-  memory = 1024
+  sockets = "2"
+  memory  = 2048
 }

@@ -33,5 +33,7 @@ module "nomad_server" {
       merge_type = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
-  memory = 2048
+  cores   = 2
+  sockets = "2"
+  memory  = 2048
 }
