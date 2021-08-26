@@ -34,6 +34,14 @@ write_files:
         }
       }
 
+      plugin "docker" {
+        config {
+          volumes {
+            enabled = true
+          }
+        }
+      }
+
       acl {
         enabled = true
       }
