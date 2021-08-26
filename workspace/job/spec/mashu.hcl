@@ -3,6 +3,11 @@ job "mashu" {
   type = "service"
 
   group "vaultwarden" {
+    constraint {
+      attribute = "$${attr.unique.hostname}"
+      value     = "1d"
+    }
+
     network {
       port "http" {
         to = 80
@@ -27,13 +32,12 @@ job "mashu" {
     task "shield" {
       driver = "docker"
 
-      env {
-        APP_BASE_URL = "https://odysseus.zenq.me"
-      }
-
       config {
         image = "vaultwarden/server:latest"
         ports = ["http"]
+        volumes = [
+          "/opt/nomad/volume/db/mashu:/data",
+        ]
       }
 
       resources {
