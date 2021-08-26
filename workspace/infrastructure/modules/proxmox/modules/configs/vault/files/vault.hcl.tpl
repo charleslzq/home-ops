@@ -9,7 +9,7 @@ storage "consul" {
   address      = "127.0.0.1:8500"
   path         = "vault/"
   service      = "yuki"
-  service_tags = "traefik.enable=true"
+  service_tags = "traefik.enable=true,traefik.http.services.yuki.loadbalancer.server.scheme=https,traefik.http.services.yuki.loadbalancer.serversTransport=internal@consul"
 }
 
 api_addr = "http://${ip}:8200"
