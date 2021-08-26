@@ -195,6 +195,13 @@ locals {
 }
 
 resource "null_resource" "server_ca" {
+  depends_on = [
+    module.joker,
+    module.rayleigh,
+    module.roger,
+    module.yagami,
+    module.yuki,
+  ]
   count = length(local.require_ca)
   triggers = {
     ca = vault_pki_secret_backend_cert.vault.issuing_ca
