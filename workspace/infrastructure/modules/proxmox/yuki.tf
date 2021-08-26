@@ -117,6 +117,9 @@ module "vault_keepalived_config" {
   state     = local.vaults[count.index].state
 }
 
+// Use signed cert for vault. To make servers accept this cert, should distribute ca cert
+// to targets, including local vagrant, vms on proxmox and traefik, and run update-ca-certificates
+// TODO: auto upload cert and key to vault server, and reload service
 resource "vault_pki_secret_backend_role" "vault" {
   depends_on = [
     vault_pki_secret_backend_intermediate_set_signed.intermediate
@@ -129,7 +132,6 @@ resource "vault_pki_secret_backend_role" "vault" {
   allow_any_name = true
   allow_ip_sans  = true
 }
-
 
 module "yuki" {
   depends_on = [
