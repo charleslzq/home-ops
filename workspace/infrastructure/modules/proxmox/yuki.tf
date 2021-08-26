@@ -119,7 +119,6 @@ module "vault_keepalived_config" {
 
 // Use signed cert for vault. To make servers accept this cert, should distribute ca cert
 // to targets, including local vagrant, vms on proxmox and traefik, and run update-ca-certificates
-// TODO: auto upload cert and key to vault server, and reload service
 resource "vault_pki_secret_backend_role" "vault" {
   depends_on = [
     vault_pki_secret_backend_intermediate_set_signed.intermediate
@@ -222,6 +221,41 @@ resource "null_resource" "server_ca" {
       "sudo mkdir -p /usr/local/share/ca-certificates/extra/",
       "sudo mv ~/ca.crt /usr/local/share/ca-certificates/extra/",
       "sudo update-ca-certificates",
+    ]
+  }
+}
+
+// auto upload cert and key to vault server, and reload service
+resource "null_resource" "vault_cert" {
+  depends_on = [
+    module.yuki
+  ]
+  count = length(local.vaults)
+  triggers = {
+    cert = vault_pki_secret_backend_cert.vault.certificate
+    key  = vault_pki_secret_backend_cert.vault.private_key
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = local.vaults[count.index].ip
+    private_key = file("~/.ssh/id_rsa")
+    certificate = file("~/.ssh/id_rsa-cert.pub")
+  }
+  provisioner "file" {
+    content     = vault_pki_secret_backend_cert.vault.certificate
+    destination = "~/cert.pem"
+  }
+  provisioner "file" {
+    content     = vault_pki_secret_backend_cert.vault.private_key
+    destination = "~/key.pem"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /opt/vault/",
+      "sudo mv ~/*.pem /opt/vault/",
+      "sudo systemctl reload vault",
     ]
   }
 }
