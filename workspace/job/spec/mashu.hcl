@@ -42,7 +42,7 @@ job "mashu" {
 
       resources {
         cpu    = 100
-        memory = 256
+        memory = 128
       }
     }
   }
