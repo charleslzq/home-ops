@@ -8,13 +8,13 @@ path "database/data/postgres/odysseus" {
 EOT
 }
 
-//resource "nomad_job" "odysseus" {
-//  jobspec = templatefile("${path.module}/spec/odysseus.hcl", {
-//    policy = vault_policy.odysseus_policy.name
-//  })
-//  purge_on_destroy = true
-//
-//  hcl2 {
-//    enabled = true
-//  }
-//}
+resource "nomad_job" "odysseus" {
+  jobspec = templatefile("${path.module}/spec/odysseus.hcl.tpl", {
+    policy = vault_policy.odysseus_policy.name
+  })
+  purge_on_destroy = true
+
+  hcl2 {
+    enabled = true
+  }
+}

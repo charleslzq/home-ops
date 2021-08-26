@@ -3,6 +3,11 @@ job "odysseus" {
   type = "service"
 
   group "joplin" {
+    constraint {
+      attribute = "$${attr.unique.hostname}"
+      value     = "1d"
+    }
+
     network {
       port "http" {
         to = 22300
@@ -31,43 +36,15 @@ job "odysseus" {
       policies = ["${policy}"]
     }
 
-    task "server" {
-      driver = "docker"
-
-      env {
-        APP_BASE_URL = "https://odysseus.zenq.me"
-        DB_CLIENT= "pg"
-        POSTGRES_USER = "odysseus"
-        POSTGRES_DB = "odysseus"
-        POSTGRES_HOST="$${NOMAD_IP_db}"
-        POSTGRES_PORT="$${NOMAD_PORT_db}"
-      }
-
-      config {
-        image = "joplin/server:latest"
-        ports = ["http"]
-      }
-
-      template {
-        data = <<EOH
-POSTGRES_PASSWORD="{{with secret "database/data/postgres/odysseus"}}{{.Data.data.password}}{{end}}"
-EOH
-        destination = "secrets/db.env"
-        env         = true
-      }
-
-      resources {
-        cpu    = 300
-        memory = 512
-      }
-    }
-
     task "db" {
       driver = "docker"
 
       config {
         image = "postgres:latest"
         ports = ["db"]
+        volumes = [
+          "/opt/nomad/volume/db/odysseus:/var/lib/postgresql/data",
+        ]
       }
 
       env {
@@ -86,6 +63,37 @@ EOH
       resources {
         cpu    = 100
         memory = 256
+      }
+    }
+
+    task "server" {
+      driver = "docker"
+
+      env {
+        APP_BASE_URL = "https://odysseus.zenq.me"
+        DB_CLIENT= "pg"
+        POSTGRES_USER = "odysseus"
+        POSTGRES_DATABASE = "odysseus"
+        POSTGRES_HOST="$${NOMAD_IP_db}"
+        POSTGRES_PORT="$${NOMAD_HOST_PORT_db}"
+      }
+
+      config {
+        image = "joplin/server:latest"
+        ports = ["http"]
+      }
+
+      template {
+        data = <<EOH
+POSTGRES_PASSWORD="{{with secret "database/data/postgres/odysseus"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
+      }
+
+      resources {
+        cpu    = 300
+        memory = 512
       }
     }
   }
