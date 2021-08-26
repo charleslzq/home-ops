@@ -181,3 +181,38 @@ resource "local_file" "local_ca" {
     command = "sudo update-ca-certificates"
   }
 }
+
+locals {
+  require_ca = concat(
+      local.vaults.*.ip,
+      local.joker_nodes.*.ip,
+      local.consul_servers.*.ip,
+      local.nomad_servers.*.ip,
+      local.classes.*.ip
+  )
+}
+
+resource "null_resource" "server_ca" {
+  count = length(local.require_ca)
+  triggers = {
+    ca = vault_pki_secret_backend_cert.vault.issuing_ca
+  }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = local.require_ca[count.index]
+    private_key = file("~/.ssh/id_rsa")
+    certificate = file("~/.ssh/id_rsa-cert.pub")
+  }
+  provisioner "file" {
+    content     = vault_pki_secret_backend_cert.vault.issuing_ca
+    destination = "~/ca.crt"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /usr/local/share/ca-certificates/extra/",
+      "sudo mv ~/ca.crt /usr/local/share/ca-certificates/extra/",
+      "sudo update-ca-certificates",
+    ]
+  }
+}
