@@ -22,6 +22,6 @@ data "consul_keys" "config" {
 }
 
 provider "vault" {
-  address         = "https://10.10.30.120:8200"
-  token           = data.consul_keys.config.var.vault_token
+  address = "https://10.10.30.120:8200"
+  token   = data.consul_keys.config.var.vault_token
 }

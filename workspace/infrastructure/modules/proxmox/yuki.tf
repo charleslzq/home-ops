@@ -184,11 +184,11 @@ resource "local_file" "local_ca" {
 
 locals {
   require_ca = concat(
-      local.vaults.*.ip,
-      local.joker_nodes.*.ip,
-      local.consul_servers.*.ip,
-      local.nomad_servers.*.ip,
-      local.classes.*.ip
+    local.vaults.*.ip,
+    local.joker_nodes.*.ip,
+    local.consul_servers.*.ip,
+    local.nomad_servers.*.ip,
+    local.classes.*.ip
   )
 }
 

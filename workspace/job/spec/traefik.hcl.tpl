@@ -39,10 +39,9 @@ job "joker" {
       config {
         image        = "traefik:v${traefik_version}"
         network_mode = "host"
-
-        volumes = [
+        volumes      = [
           "local/traefik.yml:/etc/traefik/traefik.yml",
-          "secrets/https:/etc/traefik/https"
+          "secrets/https:/etc/traefik/https",
         ]
       }
 
@@ -109,6 +108,13 @@ EOF
 {{ end }}
 EOF
         destination = "secrets/https/privkey.pem"
+      }
+
+      template {
+        data        = <<EOF
+${ca}
+EOF
+        destination = "secrets/https/ca.crt"
       }
 
       resources {
