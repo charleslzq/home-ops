@@ -27,11 +27,20 @@ job "odysseus" {
       }
     }
 
+    vault {
+      policies = ["${policy}"]
+    }
+
     task "server" {
       driver = "docker"
 
       env {
         APP_BASE_URL = "https://odysseus.zenq.me"
+        DB_CLIENT= "pg"
+        POSTGRES_USER = "odysseus"
+        POSTGRES_DB = "odysseus"
+        POSTGRES_HOST="$${NOMAD_IP_db}"
+        POSTGRES_PORT="$${NOMAD_PORT_db}"
       }
 
       config {
@@ -39,9 +48,17 @@ job "odysseus" {
         ports = ["http"]
       }
 
+      template {
+        data = <<EOH
+POSTGRES_PASSWORD="{{with secret "database/data/postgres/odysseus"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
+      }
+
       resources {
-        cpu    = 100
-        memory = 256
+        cpu    = 300
+        memory = 512
       }
     }
 
@@ -56,10 +73,6 @@ job "odysseus" {
       env {
         POSTGRES_USER = "odysseus"
         POSTGRES_DB = "odysseus"
-      }
-
-      vault {
-        policies = ["${policy}"]
       }
 
       template {
