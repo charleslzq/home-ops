@@ -17,27 +17,25 @@ job "odysseus" {
       }
     }
 
-    service {
-      name = "odysseus"
-      tags = ["traefik.enable=true"]
-
-      port = "http"
-
-      check {
-        name     = "alive"
-        type     = "tcp"
-        port     = "http"
-        interval = "10s"
-        timeout  = "2s"
-      }
-    }
-
     vault {
       policies = ["${policy}"]
     }
 
     task "db" {
       driver = "docker"
+
+      service {
+        name = "db-odysseus"
+
+        port = "db"
+
+        check {
+          type     = "tcp"
+          port     = "db"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
 
       config {
         image = "postgres:latest"
@@ -68,6 +66,20 @@ EOH
 
     task "server" {
       driver = "docker"
+
+      service {
+        name = "odysseus"
+        tags = ["traefik.enable=true"]
+
+        port = "http"
+
+        check {
+          type     = "tcp"
+          port     = "http"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
 
       env {
         APP_BASE_URL = "https://odysseus.zenq.me"
