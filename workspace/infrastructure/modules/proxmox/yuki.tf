@@ -166,3 +166,18 @@ module "yuki" {
   ]
   disk_size = "5G"
 }
+
+resource "local_file" "local_ca" {
+  filename = "${path.module}/generated/ca.crt"
+  content  = vault_pki_secret_backend_cert.vault.issuing_ca
+
+  provisioner "local-exec" {
+    command = "sudo mkdir -p /usr/local/share/ca-certificates/extra/"
+  }
+  provisioner "local-exec" {
+    command = "sudo mv ${path.module}/generated/ca.crt /usr/local/share/ca-certificates/extra/"
+  }
+  provisioner "local-exec" {
+    command = "sudo update-ca-certificates"
+  }
+}
