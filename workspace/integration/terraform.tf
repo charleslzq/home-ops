@@ -22,7 +22,6 @@ data "consul_keys" "config" {
 }
 
 provider "vault" {
-  address         = "http://10.10.30.120:8200"
-  skip_tls_verify = true
+  address         = "https://10.10.30.120:8200"
   token           = data.consul_keys.config.var.vault_token
 }
