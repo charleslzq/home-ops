@@ -2,7 +2,7 @@ resource "vault_policy" "odysseus_policy" {
   name = "odysseus_policy"
 
   policy = <<EOT
-path "database/data/postgres/odysseus" {
+path "database/data/odysseus" {
   capabilities = ["read"]
 }
 EOT

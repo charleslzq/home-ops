@@ -54,7 +54,7 @@ job "odysseus" {
 
       template {
         data = <<EOH
-POSTGRES_PASSWORD="{{with secret "database/data/postgres/odysseus"}}{{.Data.data.password}}{{end}}"
+POSTGRES_PASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end}}"
 EOH
         destination = "secrets/db.env"
         env         = true
@@ -85,7 +85,7 @@ EOH
 
       template {
         data = <<EOH
-POSTGRES_PASSWORD="{{with secret "database/data/postgres/odysseus"}}{{.Data.data.password}}{{end}}"
+POSTGRES_PASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end}}"
 EOH
         destination = "secrets/db.env"
         env         = true
