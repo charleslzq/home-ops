@@ -13,6 +13,79 @@ locals {
   ]
 }
 
+resource "vault_pki_secret_backend" "pki" {
+  path                  = "pki"
+  max_lease_ttl_seconds = 87600 * 3600
+}
+
+resource "vault_pki_secret_backend_root_cert" "root" {
+  depends_on = [
+    vault_pki_secret_backend.pki
+  ]
+  backend = vault_pki_secret_backend.pki.path
+
+  type        = "internal"
+  common_name = "Root PKI CA"
+  ttl         = 87600 * 3600
+}
+
+resource "vault_pki_secret_backend" "pki_int" {
+  path                  = "pki_int"
+  max_lease_ttl_seconds = 43800 * 3600
+}
+
+resource "vault_pki_secret_backend_intermediate_cert_request" "intermediate" {
+  depends_on = [
+    vault_pki_secret_backend.pki_int
+  ]
+  backend = vault_pki_secret_backend.pki_int.path
+
+  type        = "internal"
+  common_name = "Intermediate PKI"
+}
+
+resource "vault_pki_secret_backend_root_sign_intermediate" "intermediate" {
+  depends_on = [
+    vault_pki_secret_backend_root_cert.root,
+    vault_pki_secret_backend_intermediate_cert_request.intermediate
+  ]
+  backend = vault_pki_secret_backend.pki.path
+
+  csr         = vault_pki_secret_backend_intermediate_cert_request.intermediate.csr
+  ttl         = 43800 * 3600
+  common_name = "Intermediate CA"
+}
+
+resource "vault_pki_secret_backend_intermediate_set_signed" "intermediate" {
+  depends_on = [
+    vault_pki_secret_backend_intermediate_cert_request.intermediate
+  ]
+
+  backend     = vault_pki_secret_backend.pki_int.path
+  certificate = vault_pki_secret_backend_root_sign_intermediate.intermediate.certificate
+}
+
+resource "vault_pki_secret_backend_cert" "vault" {
+  depends_on = [vault_pki_secret_backend_role.vault]
+
+  backend     = vault_pki_secret_backend.pki_int.path
+  name        = vault_pki_secret_backend_role.vault.name
+  common_name = "vault"
+  format      = "pem"
+  ttl         = 365 * 24 * 3600
+  alt_names = [
+    "localhost",
+    "yuki-1",
+    "yuki-2"
+  ]
+  ip_sans = [
+    "127.0.0.1",
+    "10.10.30.120",
+    "10.10.30.121",
+    "10.10.30.122",
+  ]
+}
+
 module "vault_consul_config" {
   count = length(local.vaults)
 
@@ -29,6 +102,9 @@ module "vault_config" {
 
   vault_version = local.vault_version
   ip            = local.vaults[count.index].ip
+  vault_cert    = vault_pki_secret_backend_cert.vault.certificate
+  vault_key     = vault_pki_secret_backend_cert.vault.private_key
+  vault_ca      = vault_pki_secret_backend_cert.vault.issuing_ca
 }
 
 module "vault_keepalived_config" {
@@ -40,6 +116,20 @@ module "vault_keepalived_config" {
   password  = data.vault_generic_secret.keepalived_passwords.data.yuki
   state     = local.vaults[count.index].state
 }
+
+resource "vault_pki_secret_backend_role" "vault" {
+  depends_on = [
+    vault_pki_secret_backend_intermediate_set_signed.intermediate
+  ]
+  backend        = vault_pki_secret_backend.pki_int.path
+  name           = "vault"
+  ttl            = 43800 * 3600
+  require_cn     = false
+  generate_lease = true
+  allow_any_name = true
+  allow_ip_sans  = true
+}
+
 
 module "yuki" {
   depends_on = [

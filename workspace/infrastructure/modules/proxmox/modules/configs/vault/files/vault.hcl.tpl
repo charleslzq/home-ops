@@ -1,7 +1,8 @@
 listener "tcp" {
   address          = "0.0.0.0:8200"
   cluster_address  = "${ip}:8201"
-  tls_disable      = "true"
+  tls_cert_file    = "/opt/vault/cert.pem"
+  tls_key_file     = "/opt/vault/key.pem"
 }
 
 storage "consul" {

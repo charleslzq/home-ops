@@ -5,6 +5,15 @@ write_files:
   - path: /etc/vault.d/vault.hcl
     content: |
       ${vault_config}
+  - path: /opt/vault/cert.pem
+    content: |
+      ${vault_cert}
+  - path: /opt/vault/key.pem
+    content: |
+      ${vault_key}
+  - path: /usr/local/share/ca-certificates/extra/ca.crt
+    content: |
+      ${vault_ca}
   - path: /etc/systemd/system/vault.service
     content: |
       [Unit]
@@ -33,5 +42,6 @@ runcmd:
   - cd /usr/local/bin/
   - sudo chown vault:vault vault
   - sudo chmod +x vault
+  - sudo update-ca-certificates
   - sudo systemctl enable vault
   - sudo systemctl start vault
