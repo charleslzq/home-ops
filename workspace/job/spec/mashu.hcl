@@ -39,11 +39,6 @@ job "mashu" {
           "/opt/nomad/volume/db/mashu:/data",
         ]
       }
-
-      resources {
-        cpu    = 100
-        memory = 128
-      }
     }
   }
 }

@@ -57,11 +57,6 @@ EOH
         destination = "secrets/db.env"
         env         = true
       }
-
-      resources {
-        cpu    = 100
-        memory = 128
-      }
     }
 
     task "server" {
@@ -101,11 +96,6 @@ POSTGRES_PASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password
 EOH
         destination = "secrets/db.env"
         env         = true
-      }
-
-      resources {
-        cpu    = 500
-        memory = 256
       }
     }
   }

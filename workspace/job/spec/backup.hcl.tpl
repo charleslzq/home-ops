@@ -42,11 +42,6 @@ EOH
         change_mode   = "noop"
       }
 
-      resources {
-        cpu    = 20
-        memory = 200
-      }
-
       logs {
         max_files     = 3
         max_file_size = 10

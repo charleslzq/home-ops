@@ -116,11 +116,6 @@ ${ca}
 EOF
         destination = "secrets/https/ca.crt"
       }
-
-      resources {
-        cpu    = 100
-        memory = 128
-      }
     }
   }
 }
