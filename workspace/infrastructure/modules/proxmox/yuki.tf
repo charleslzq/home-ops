@@ -189,7 +189,8 @@ locals {
     local.joker_nodes.*.ip,
     local.consul_servers.*.ip,
     local.nomad_servers.*.ip,
-    local.classes.*.ip
+    local.classes.*.ip,
+    local.masters.*.ip,
   )
 }
 
@@ -200,6 +201,7 @@ resource "null_resource" "server_ca" {
     module.roger,
     module.yagami,
     module.yuki,
+    module.tosaka,
   ]
   count = length(local.require_ca)
   triggers = {

@@ -27,38 +27,28 @@ module "tosaka_keepalive_config" {
   state     = local.masters[count.index].state
 }
 
-module "servents" {
-  count = length(local.masters)
-
-  source       = "./modules/configs/pihole"
-  hostname     = local.masters[count.index].hostname
-  web_password = data.vault_generic_secret.default.data.password
-  ip           = local.masters[count.index].ip
-}
-
 module "tosaka" {
-  depends_on = [
-    module.servents
-  ]
   count = length(local.masters)
 
-  source          = "./modules/cloud_init"
-  vm_name         = local.masters[count.index].hostname
-  proxmox_node    = local.masters[count.index].node
-  cloud_ip_config = "ip=${local.masters[count.index].ip}/24,gw=10.10.30.1"
-  ssh_ca_cert     = var.ssh_ca_cert
-  cloud_init_parts = [
-    {
-      content_type = "text/cloud-config"
-      content      = module.servents[count.index].cloud_init_config
-      merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
-    },
+  source                  = "./modules/worker"
+  vm_name                 = local.masters[count.index].hostname
+  proxmox_node            = local.masters[count.index].node
+  cifs_config             = module.cifs.cloud_init_config
+  consul_version          = local.consul_version
+  consul_template_version = local.consul_template_version
+  nomad_version           = local.nomad_version
+  server_ip_list          = local.consul_server_ip_list
+  gateway                 = "10.10.30.1"
+  ip                      = local.masters[count.index].ip
+  ssh_ca_cert             = var.ssh_ca_cert
+  node_type               = "dns"
+  additional_cloud_init_config = [
     {
       content_type = "text/cloud-config"
       content      = module.tosaka_keepalive_config[count.index].cloud_init_config
       merge_type   = "list(append) + dict(no_replace, recurse_list) + str()"
     }
   ]
-  memory    = 512
-  disk_size = "5G"
+  memory    = 1024
+  disk_size = "10G"
 }
