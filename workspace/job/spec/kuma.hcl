@@ -38,7 +38,7 @@ job "kuma" {
       }
 
       config {
-        image = "ghcr.io/linuxserver/mariadb"
+        image = "linuxserver/mariadb"
         ports = ["db"]
         volumes = [
           "/opt/nomad/volume/db/kuma:/config",
@@ -90,7 +90,7 @@ EOH
       }
 
       config {
-        image = "ghcr.io/linuxserver/bookstack"
+        image = "linuxserver/bookstack"
         ports = ["http"]
       }
 
