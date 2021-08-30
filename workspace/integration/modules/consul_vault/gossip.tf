@@ -5,7 +5,7 @@ data "vault_generic_secret" "consul_setting" {
 }
 
 locals {
-  all = concat(var.consul_clients, var.consul_servers)
+  all = concat(local.all_clients, var.consul_servers)
   gossip_hcl = templatefile("${path.module}/files/gossip.hcl", {
     encrypt = data.vault_generic_secret.consul_setting.data.gossip
   })

@@ -9,6 +9,7 @@ module "consul_vault_integration" {
   vault_int_ca_path = vault_pki_secret_backend.pki_int.path
   consul_servers    = local.consul_servers
   consul_clients    = local.consul_clients
+  vaults            = local.vaults
 }
 
 // reset consul tls.

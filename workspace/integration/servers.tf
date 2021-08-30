@@ -66,6 +66,6 @@ locals {
       ip   = "10.10.30.101"
       name = "rayleigh-3"
   }]
-  consul_clients = concat(local.vaults, local.nomad_servers, local.nomad_clients)
-  all_servers    = concat(local.consul_servers, local.consul_clients)
+  consul_clients = concat(local.nomad_servers, local.nomad_clients)
+  all_servers    = concat(local.consul_servers, local.consul_clients, local.vaults)
 }

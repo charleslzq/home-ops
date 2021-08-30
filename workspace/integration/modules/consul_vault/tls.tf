@@ -106,7 +106,7 @@ resource "null_resource" "consul_tls_client_certs" {
     null_resource.consul_gossip,
     null_resource.consul_tls_server_certs,
   ]
-  count = length(var.consul_clients)
+  count = length(local.all_clients)
   triggers = {
     template_config = data.local_file.consul_template_config.content,
     tls_config      = data.local_file.consul_client_tls_config.content
@@ -114,7 +114,7 @@ resource "null_resource" "consul_tls_client_certs" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = var.consul_clients[count.index].ip
+    host        = local.all_clients[count.index].ip
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }
