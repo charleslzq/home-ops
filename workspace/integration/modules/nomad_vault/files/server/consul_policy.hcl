@@ -1,15 +1,13 @@
 node_prefix "" {
   policy = "read"
 }
+
 service_prefix "" {
-  policy = "read"
+  policy = "write"
 }
+
 agent_prefix "" {
   policy = "read"
 }
-node "${name}" {
-  policy = "write"
-}
-agent "${name}" {
-  policy = "write"
-}
+
+acl = "write"

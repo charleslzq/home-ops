@@ -1,0 +1,3 @@
+consul {
+  token   = "${token}"
+}
