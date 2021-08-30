@@ -9,3 +9,9 @@ bootstrap_expect = ${server_count}
 ui = true
 client_addr = "0.0.0.0"
 advertise_addr = ${ip}
+
+acl {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+}
