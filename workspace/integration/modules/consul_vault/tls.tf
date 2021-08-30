@@ -51,6 +51,9 @@ data "local_file" "consul_template_config" {
 }
 
 resource "null_resource" "consul_tls_server_certs" {
+  depends_on = [
+    null_resource.consul_gossip
+  ]
   count = length(var.consul_servers)
   triggers = {
     template_config = data.local_file.consul_template_config.content,
@@ -99,6 +102,10 @@ resource "null_resource" "consul_tls_server_certs" {
 }
 
 resource "null_resource" "consul_tls_client_certs" {
+  depends_on = [
+    null_resource.consul_gossip,
+    null_resource.consul_tls_server_certs,
+  ]
   count = length(var.consul_clients)
   triggers = {
     template_config = data.local_file.consul_template_config.content,
