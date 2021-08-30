@@ -18,8 +18,8 @@ service_prefix "" {
 key_prefix "traefik/" {
   policy = "write"
 }
-session "" {
-  policy = "write"
+node_prefix "" {
+  policy = "read"
 }
 EOT
   datacenters = ["rayleigh"]

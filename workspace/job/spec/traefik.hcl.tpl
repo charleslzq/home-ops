@@ -1,7 +1,6 @@
 job "joker" {
   datacenters = ["roger"]
   type        = "system"
-  consul_token = "${consul_token}"
 
   group "traefik" {
     constraint {
