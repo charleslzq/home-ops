@@ -1,3 +1,9 @@
+terraform {
+  required_providers {
+    consul = {}
+  }
+}
+
 variable "vault_address" {
   type = string
 }

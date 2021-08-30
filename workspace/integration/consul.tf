@@ -3,6 +3,9 @@ module "consul_vault_integration" {
     vault_pki_secret_backend_intermediate_set_signed.intermediate,
     module.consul_template_vault_integration,
   ]
+  providers = {
+    consul = consul.home
+  }
 
   source            = "./modules/consul_vault"
   vault_address     = local.vault_address
