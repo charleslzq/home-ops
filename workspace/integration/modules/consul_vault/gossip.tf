@@ -19,7 +19,7 @@ resource "null_resource" "consul_gossip" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = local.all[count.index]
+    host        = local.all[count.index].ip
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }

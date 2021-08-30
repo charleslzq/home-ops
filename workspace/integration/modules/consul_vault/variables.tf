@@ -7,9 +7,15 @@ variable "vault_int_ca_path" {
 }
 
 variable "consul_servers" {
-  type = list(string)
+  type = list(object({
+    ip = string
+    name      = string
+  }))
 }
 
 variable "consul_clients" {
-  type = list(string)
+  type = list(object({
+    ip = string
+    name      = string
+  }))
 }

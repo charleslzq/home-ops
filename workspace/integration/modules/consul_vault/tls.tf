@@ -62,7 +62,7 @@ resource "null_resource" "consul_tls_server_certs" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = var.consul_servers[count.index]
+    host        = var.consul_servers[count.index].ip
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }
@@ -114,7 +114,7 @@ resource "null_resource" "consul_tls_client_certs" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = var.consul_clients[count.index]
+    host        = var.consul_clients[count.index].ip
     private_key = file("~/.ssh/id_rsa")
     certificate = file("~/.ssh/id_rsa-cert.pub")
   }
