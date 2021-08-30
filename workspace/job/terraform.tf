@@ -22,6 +22,16 @@ provider "vault" {
   token           = data.consul_keys.config.var.vault_token
 }
 
+data "vault_generic_secret" "consul_role" {
+  path = "consul/creds/consul-server-role"
+}
+
+provider "consul" {
+  alias   = "home"
+  address = "10.10.30.99:8500"
+  token   = data.vault_generic_secret.consul_role.data.token
+}
+
 // manually bootstrap acl and configure vault nomad engine
 resource "vault_nomad_secret_role" "terraform" {
   backend = "nomad"

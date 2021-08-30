@@ -1,6 +1,7 @@
 job "joker" {
   datacenters = ["roger"]
   type        = "system"
+  consul_token = "${consul_token}"
 
   group "traefik" {
     constraint {
@@ -41,6 +42,7 @@ job "joker" {
         network_mode = "host"
         volumes      = [
           "local/traefik.yml:/etc/traefik/traefik.yml",
+          "local/config.yml:/etc/traefik/config/config.yml",
           "secrets/https:/etc/traefik/https",
         ]
       }
@@ -66,10 +68,13 @@ api:
 ping: {}
 
 providers:
-  consul:
-    endpoints:
-      - "127.0.0.1:8500"
+  file:
+    watch: true
+    directory: "/etc/traefik/config"
+    debugLogGeneratedTemplate: true
   consulCatalog:
+    endpoint:
+      token: ${consul_token}
     requireConsistent: true
     exposedByDefault: false
     defaultRule: "Host(`{{ .Name }}.zenq.me`)"
@@ -90,6 +95,57 @@ EOF
         destination = "local/traefik.yml"
         left_delimiter = "^^"
         right_delimiter = "$$"
+      }
+
+
+
+      template {
+        data       = <<EOF
+http:
+  routers:
+    rayleigh:
+      rule: Host(`rayleigh.zenq.me`)
+      service: rayleigh
+    roger:
+      rule: Host(`roger.zenq.me`)
+      service: roger
+    yakumo:
+      rule: Host(`yakumo.zenq.me`)
+      service: yakumo
+  services:
+    rayleigh:
+      loadbalancer:
+        servers:
+          - url: http://10.10.30.99:8500
+          - url: http://10.10.30.100:8500
+          - url: http://10.10.30.101:8500
+    roger:
+      loadbalancer:
+        servers:
+          - url: http://10.10.30.210:4646
+          - url: http://10.10.30.211:4646
+          - url: http://10.10.30.212:4646
+    yakumo:
+      loadbalancer:
+        servers:
+          - url: http://10.10.30.108:5000
+  serversTransports:
+    internal:
+      rootCAs:
+        - /etc/traefik/https/ca.crt
+
+tls:
+  certificates:
+    - certFile: /etc/traefik/https/fullchain.pem
+      keyFile: /etc/traefik/https/privkey.pem
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/traefik/https/fullchain.pem
+        keyFile: /etc/traefik/https/privkey.pem
+  options:
+EOF
+        destination = "local/config.yml"
       }
 
       template {
