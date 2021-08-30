@@ -11,6 +11,7 @@ module "consul_vault_integration" {
   consul_clients    = local.consul_clients
 }
 
+// reset consul tls.
 //resource "null_resource" "rm_tls_config" {
 //  count = length(local.all_servers)
 //
@@ -23,8 +24,8 @@ module "consul_vault_integration" {
 //  }
 //  provisioner "remote-exec" {
 //    inline = [
-//      "sudo rm -p /etc/consul.d/tls.hcl",
-//      "sudo rm -p /etc/consul.d/20.tls.hcl",
+//      "sudo rm -f /etc/consul.d/tls.hcl",
+//      "sudo rm -f /etc/consul.d/20.tls.hcl",
 //      "sudo systemctl restart consul",
 //    ]
 //  }

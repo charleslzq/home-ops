@@ -57,7 +57,7 @@ resource "null_resource" "consul_template_vault_config" {
   provisioner "remote-exec" {
     inline = [
       "sudo mv ~/10.vault.hcl /etc/consul_template.d/",
-      "sudo systemctl reload consul_template"
+      "sudo systemctl restart consul_template"
     ]
   }
 }

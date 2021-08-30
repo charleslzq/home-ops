@@ -31,5 +31,6 @@ template {
 template {
   source      = "/opt/consul/templates/ca.crt.tpl"
   destination = "/opt/consul/agent-certs/ca.crt"
+  perms       = 0755
   command     = "systemctl restart consul"
 }

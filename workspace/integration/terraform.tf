@@ -9,11 +9,6 @@ terraform {
 
 provider "consul" {}
 
-provider "consul" {
-  alias   = "home"
-  address = "http://10.10.30.100:8500"
-}
-
 data "consul_keys" "config" {
   key {
     name = "vault_token"
