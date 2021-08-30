@@ -15,9 +15,6 @@ resource "consul_acl_policy" "joker_policy" {
 service_prefix "" {
   policy = "read"
 }
-key_prefix "traefik/" {
-  policy = "write"
-}
 node_prefix "" {
   policy = "read"
 }
