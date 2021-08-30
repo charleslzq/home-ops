@@ -5,6 +5,9 @@ resource "vault_policy" "consul_template_policy" {
 path "pki_int/issue/nomad-cluster" {
   capabilities = ["update"]
 }
+path "pki_int/issue/consul-cluster" {
+  capabilities = ["update"]
+}
 EOT
 }
 

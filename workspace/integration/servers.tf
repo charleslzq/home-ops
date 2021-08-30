@@ -32,5 +32,6 @@ locals {
   nomad_clients  = distinct(data.consul_service.nomad_client.service.*.node_address)
   vaults         = distinct(data.consul_service.vault.service.*.node_address)
   consul_servers = distinct(data.consul_service.consul.service.*.node_address)
-  all_servers    = concat(local.consul_servers, local.vaults, local.nomad_servers, local.nomad_clients)
+  consul_clients = concat(local.vaults, local.nomad_servers, local.nomad_clients)
+  all_servers    = concat(local.consul_servers, local.consul_clients)
 }
