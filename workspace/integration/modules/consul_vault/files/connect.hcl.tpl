@@ -1,4 +1,5 @@
 connect {
+  enabled = true
   ca_provider = "vault"
   ca_config {
     address = "https://10.10.30.120:8200"

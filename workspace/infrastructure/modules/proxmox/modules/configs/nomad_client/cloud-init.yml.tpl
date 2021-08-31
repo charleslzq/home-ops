@@ -41,6 +41,7 @@ write_files:
 
       plugin "docker" {
         config {
+          infra_image = “registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0
           volumes {
             enabled = true
           }

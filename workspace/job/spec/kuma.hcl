@@ -9,11 +9,25 @@ job "kuma" {
     }
 
     network {
+      mode = "bridge"
       port "http" {
         to = 80
       }
       port "db" {
         to = 3306
+      }
+    }
+
+    service {
+      name = "kuma"
+      tags = [
+        "traefik.enable=true",
+        "traefik.consulcatalog.connect=true"
+      ]
+      port = "http"
+
+      connect {
+        sidecar_service {}
       }
     }
 
@@ -65,19 +79,6 @@ EOH
 
     task "server" {
       driver = "docker"
-
-      service {
-        name = "kuma"
-        tags = ["traefik.enable=true"]
-        port = "http"
-
-        check {
-          type = "tcp"
-          port = "http"
-          interval = "10s"
-          timeout = "2s"
-        }
-      }
 
       env {
         PUID = 1000

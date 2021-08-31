@@ -12,6 +12,18 @@ resource "consul_acl_policy" "joker_policy" {
   provider    = consul.home
   name        = "service_joker"
   rules       = <<EOT
+service "joker" {
+  policy = "write"
+}
+service "joker-sidecar-proxy" {
+  policy = "write"
+}
+service "traefik" {
+  policy = "write"
+}
+service "traefik-sidecar-proxy" {
+  policy = "write"
+}
 service_prefix "" {
   policy = "read"
 }

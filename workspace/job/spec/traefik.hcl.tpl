@@ -76,6 +76,7 @@ providers:
       token: ${consul_token}
     requireConsistent: true
     exposedByDefault: false
+    connectAware: true
     defaultRule: "Host(`{{ .Name }}.zenq.me`)"
 
 entryPoints:
