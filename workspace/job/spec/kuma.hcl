@@ -9,7 +9,6 @@ job "kuma" {
     }
 
     network {
-      mode = "bridge"
       port "http" {
         to = 80
       }
@@ -22,13 +21,13 @@ job "kuma" {
       name = "kuma"
       tags = [
         "traefik.enable=true",
-        "traefik.consulcatalog.connect=true"
+//        "traefik.consulcatalog.connect=true",
       ]
       port = "http"
 
-      connect {
-        sidecar_service {}
-      }
+//      connect {
+//        sidecar_service {}
+//      }
     }
 
     vault {
