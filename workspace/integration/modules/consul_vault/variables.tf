@@ -35,4 +35,5 @@ variable "vaults" {
 
 locals {
   all_clients = concat(var.vaults, var.consul_clients)
+  all         = concat(local.all_clients, var.consul_servers)
 }
