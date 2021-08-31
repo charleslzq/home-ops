@@ -14,6 +14,11 @@ packages:
   - docker-ce-cli
   - containerd.io
 write_files:
+  - path: /etc/sysctl.d/99-cni.conf
+    content: |
+      net.bridge.bridge-nf-call-arptables = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables = 1
   - path: /etc/nomad.d/nomad.hcl
     content: |
       datacenter = "roger"
@@ -108,3 +113,11 @@ runcmd:
   - sudo systemctl start docker
   - sudo systemctl enable docker
   - sudo addgroup ubuntu docker
+  - cd /tmp
+  - sudo cp /mnt/cifs/cloud-init/cni/${cni_version}/cni-plugins.tgz .
+  - sudo mkdir -p /opt/cni/bin
+  - sudo tar -C /opt/cni/bin -xzf cni-plugins.tgz
+  - echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-arptables
+  - echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-ip6tables
+  - echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
+
