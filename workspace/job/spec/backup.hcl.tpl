@@ -19,6 +19,10 @@ job "backup-daily" {
       value     = "gateway"
     }
 
+    vault {
+     policies = ["${policy}"]
+   }
+
     task "consul_backup" {
       driver = "exec"
       user = "ubuntu"
@@ -32,6 +36,14 @@ job "backup-daily" {
         volume      = "cifs"
         destination = "/mnt/cifs"
         read_only   = false
+      }
+
+      template {
+        data = <<EOH
+CONSUL_HTTP_TOKEN="{{with secret "consul/creds/consul-server-role"}}{{.Data.token}}{{end}}"
+EOH
+        destination = "secrets/consul.env"
+        env = true
       }
 
       template {
