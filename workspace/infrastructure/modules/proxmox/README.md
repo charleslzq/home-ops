@@ -16,8 +16,8 @@ yuki-2 | skypiea | 10.10.30.122 | consul, consul-template, vault, keepalived(ip:
 roger-1 | avalon | 10.10.30.210 | consul, consul-template, nomad | nomad server
 roger-2 | skypiea | 10.10.30.211 | consul, consul-template, nomad | nomad server
 roger-3 | skypiea | 10.10.30.212 | consul, consul-template, nomad | nomad server
-rin | skypiea | 10.10.30.234 | consul, consul-template, nomad, docker | nomad client, dns
-sakura | avalon | 10.10.30.236 | consul, consul-template, nomad, docker | nomad client, dns
+rin | skypiea | 10.10.30.234 | consul, consul-template, nomad, docker, keepalived(ip: 10.10.30.235) | nomad client, dns
+sakura | avalon | 10.10.30.236 | consul, consul-template, nomad, docker, keepalived(ip: 10.10.30.235) | nomad client, dns
 joker-1 | avalon | 10.10.30.111 | consul, consul-template, nomad, docker, keepalived(ip: 10.10.30.110) | nomad client, gateway
 joker-2 | skypiea | 10.10.30.112 | consul, consul-template, nomad, docker, keepalived(ip: 10.10.30.110) | nomad client, gateway
 2c | avalon | 10.10.30.50 | consul, consul-template, nomad, docker | nomad client
@@ -41,7 +41,7 @@ one should setup agent token for consul servers and vaults, and then initialize 
 5. Configure vault consul engine to generate consul token.
 
 ```hcl
- //consul server policy:
+//consul server policy:
 node_prefix "rayleigh" {
  policy = "write"
 }
@@ -52,7 +52,7 @@ service_prefix "" {
  policy = "read"
 }
 
- // vault server policy:
+// vault server policy:
 node_prefix "" {
  policy = "read"
 }
@@ -66,7 +66,7 @@ agent_prefix "yuki" {
  policy = "write"
 }
 
- // vault service policy:
+// vault service policy:
 service "yuki" {
   policy = "write"
 }
