@@ -31,7 +31,7 @@ the ca certificate is distributed to every vm (except wireguard relays), includi
 
 ## Manually setup consul acl token, and unseal vault
 
-After `terraform apply`, all nodes should be setup, but vaults ares sealed. Before proceed to integration part,
+After `terraform apply`, all nodes should be setup, but vaults are sealed. Before proceed to integration part,
 one should setup agent token for consul servers and vaults, and then initialize and unseal vaults.
 
 1. Bootstrap consul acl token
