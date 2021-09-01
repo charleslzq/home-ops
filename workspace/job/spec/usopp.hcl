@@ -31,7 +31,7 @@ job "usopp" {
         WHOOGLE_CONFIG_URL = "https://usopp.zenq.me"
         WHOOGLE_CONFIG_THEME = "dark"
         WHOOGLE_CONFIG_SAFE = true
-        WHOOGLE_CONFIG_TOR = true
+        WHOOGLE_CONFIG_TOR = false
         WHOOGLE_CONFIG_NEW_TAB = true
         WHOOGLE_CONFIG_VIEW_IMAGE = true
         EXPOSE_PORT = 5000
