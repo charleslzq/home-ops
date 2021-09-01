@@ -38,6 +38,7 @@ one should setup agent token for consul servers and vaults, and then initialize 
 2. Create policies for consul servers and vault servers
 3. Generate tokens for consul servers and vault servers, modify consul config file manually and restart consul service.
 4. Initialize and unseal vault.
+5. Configure vault consul engine to generate consul token.
 
 ```hcl
  //consul server policy:
