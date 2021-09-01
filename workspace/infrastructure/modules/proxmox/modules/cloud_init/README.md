@@ -16,13 +16,17 @@ storage | string | disk storage for vm, there is no way to override currently
 
 ## Input
 
-name | type | description
---- | --- | ---
-vm_name | string | the name of vm, should be unique in the cluster
-ssh_ca_cert | string | ssh ca certificate
-proxmox_node | string | proxmox node the vm will be created on
-cloud_ip_config | string | ip related config, like: `ip=192.168.1.2/24,gw=192.168.1.1`
-cloud_init_parts | list | additional cloud init config
+name | type | default | description
+--- | --- | --- | ---
+vm_name | string | | the name of vm, should be unique in the cluster
+ssh_ca_cert | string | | ssh ca certificate
+proxmox_node | string | | proxmox node the vm will be created on
+cloud_ip_config | string | | ip related config, like: `ip=192.168.1.2/24,gw=192.168.1.1`
+cloud_init_parts | list | | additional cloud init config
+cores | number | 1 | the number of cpu cores
+sockets | string | "1" | the number of cpu sockets
+memory | number | 1024 | memory size
+disk_size | string | "20G" | disk size
 
 The fields of objects in cloud_init_parts are:
 name | type | description
