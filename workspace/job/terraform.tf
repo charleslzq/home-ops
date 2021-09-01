@@ -9,17 +9,8 @@ terraform {
 
 provider "consul" {}
 
-data "consul_keys" "config" {
-  key {
-    name = "vault_token"
-    path = "vault-keys/console/vault-token"
-  }
-}
-
 provider "vault" {
   address         = "https://10.10.30.121:8200"
-  skip_tls_verify = true
-  token           = data.consul_keys.config.var.vault_token
 }
 
 data "vault_generic_secret" "consul_role" {
