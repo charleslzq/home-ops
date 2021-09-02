@@ -2,40 +2,86 @@ job "odysseus" {
   datacenters = ["roger"]
   type = "service"
 
+  vault {
+    policies = ["${policy}"]
+  }
+
   group "joplin" {
+    network {
+      mode = "bridge"
+      port "http" {
+        to = 22300
+      }
+    }
+
+    service {
+      name = "odysseus"
+      tags = ["traefik.enable=true"]
+
+      port = "http"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "db-odysseus"
+              local_bind_port  = 5432
+            }
+          }
+        }
+      }
+    }
+
+    task "server" {
+      driver = "docker"
+
+      env {
+        APP_BASE_URL = "https://odysseus.zenq.me"
+        DB_CLIENT= "pg"
+        POSTGRES_USER = "odysseus"
+        POSTGRES_DATABASE = "odysseus"
+      }
+
+      config {
+        image = "joplin/server:latest"
+        ports = ["http"]
+      }
+
+      template {
+        data = <<EOH
+POSTGRES_PASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
+      }
+    }
+  }
+
+  group "joplin-db" {
     constraint {
       attribute = "$${attr.unique.hostname}"
       value     = "1d"
     }
 
     network {
-      port "http" {
-        to = 22300
-      }
+      mode = "bridge"
       port "db" {
         to = 5432
       }
     }
 
-    vault {
-      policies = ["${policy}"]
+    service {
+      name = "db-odysseus"
+      port = "db"
+      address_mode = "alloc"
+
+      connect {
+        sidecar_service {}
+      }
     }
 
     task "db" {
       driver = "docker"
-
-      service {
-        name = "db-odysseus"
-
-        port = "db"
-
-        check {
-          type     = "tcp"
-          port     = "db"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }
 
       config {
         image = "postgres:latest"
@@ -48,46 +94,6 @@ job "odysseus" {
       env {
         POSTGRES_USER = "odysseus"
         POSTGRES_DB = "odysseus"
-      }
-
-      template {
-        data = <<EOH
-POSTGRES_PASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end}}"
-EOH
-        destination = "secrets/db.env"
-        env         = true
-      }
-    }
-
-    task "server" {
-      driver = "docker"
-
-      service {
-        name = "odysseus"
-        tags = ["traefik.enable=true"]
-
-        port = "http"
-
-        check {
-          type     = "tcp"
-          port     = "http"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }
-
-      env {
-        APP_BASE_URL = "https://odysseus.zenq.me"
-        DB_CLIENT= "pg"
-        POSTGRES_USER = "odysseus"
-        POSTGRES_DATABASE = "odysseus"
-        POSTGRES_HOST="$${NOMAD_IP_db}"
-        POSTGRES_PORT="$${NOMAD_HOST_PORT_db}"
-      }
-
-      config {
-        image = "joplin/server:latest"
-        ports = ["http"]
       }
 
       template {
