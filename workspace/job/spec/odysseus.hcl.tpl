@@ -17,7 +17,6 @@ job "odysseus" {
     service {
       name = "odysseus"
       tags = ["traefik.enable=true"]
-
       port = "http"
 
       connect {
