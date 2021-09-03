@@ -43,6 +43,10 @@ locals {
       ip   = "10.10.30.236"
       name = "sakura"
     },
+    {
+      ip   = "10.10.30.180"
+      name = "shanks"
+    }
   ]
   vaults = [
     {

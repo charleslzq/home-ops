@@ -191,6 +191,7 @@ locals {
     local.nomad_servers.*.ip,
     local.classes.*.ip,
     local.masters.*.ip,
+    ["10.10.30.180"],
   )
 }
 

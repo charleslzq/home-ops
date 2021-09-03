@@ -70,7 +70,7 @@ resource "proxmox_vm_qemu" "cloud-init-server" {
   disk {
     size     = var.disk_size
     type     = "scsi"
-    storage  = data.vault_generic_secret.proxmox_node_settings.data.storage
+    storage  = var.storage != "" ? var.storage : data.vault_generic_secret.proxmox_node_settings.data.storage
     iothread = 1
   }
   network {

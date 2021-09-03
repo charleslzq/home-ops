@@ -12,7 +12,7 @@ name | type | description
 host | string | node host
 username | string | ssh username
 password | string | ssh password
-storage | string | disk storage for vm, there is no way to override currently
+storage | string | disk storage for vm
 
 ## Input
 
@@ -27,6 +27,7 @@ cores | number | 1 | the number of cpu cores
 sockets | string | "1" | the number of cpu sockets
 memory | number | 1024 | memory size
 disk_size | string | "20G" | disk size
+storage | string | "" | disk storage for vm, will use storage in setting if not set
 
 The fields of objects in cloud_init_parts are:
 name | type | description

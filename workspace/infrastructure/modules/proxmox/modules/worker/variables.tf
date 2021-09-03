@@ -59,6 +59,11 @@ variable "memory" {
   default = 8192
 }
 
+variable "storage" {
+  type    = string
+  default = ""
+}
+
 variable "disk_size" {
   type    = string
   default = "50G"

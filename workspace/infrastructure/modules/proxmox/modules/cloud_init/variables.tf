@@ -42,3 +42,8 @@ variable "disk_size" {
   default = "20G"
 }
 
+variable "storage" {
+  type    = string
+  default = ""
+}
+

@@ -13,7 +13,6 @@ packages:
   - docker-ce
   - docker-ce-cli
   - containerd.io
-  - postgresql-client-common
   - postgresql-client
 write_files:
   - path: /etc/sysctl.d/99-cni.conf

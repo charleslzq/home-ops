@@ -41,5 +41,6 @@ module "worker" {
   cores     = var.cores
   sockets   = var.sockets
   memory    = var.memory
+  storage   = var.storage
   disk_size = var.disk_size
 }
