@@ -112,6 +112,7 @@ EOH
         PGHOST = "127.0.0.1"
         PGPORT = 5432
         PGUSER = "odysseus"
+        name = "odysseus"
       }
 
       template {
@@ -128,6 +129,60 @@ PGPASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+    }
+  }
+
+  group "bulma" {
+    volume "cifs" {
+      type      = "host"
+      source    = "cifs"
+      read_only = false
+    }
+
+    volume "host" {
+      type      = "host"
+      source    = "host"
+      read_only = true
+    }
+
+    constraint {
+      attribute = "$${attr.unique.hostname}"
+      value     = "2d"
+    }
+
+    task "backup-wallabag-db" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = ["local/backup_sqlite.sh"]
+      }
+
+      volume_mount {
+        volume      = "cifs"
+        destination = "/mnt/cifs"
+        read_only   = false
+      }
+
+      volume_mount {
+        volume      = "host"
+        destination = "/mnt/host"
+        read_only   = true
+      }
+
+      env {
+        name = "bulma"
+        database = "/mnt/host/bulma/data/db/wallabag.sqlite"
+      }
+
+      template {
+        data = <<EOH
+${backup_sqlite_script}
+EOH
+        destination   = "local/backup_sqlite.sh"
+        change_mode   = "noop"
       }
     }
   }

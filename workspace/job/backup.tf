@@ -15,6 +15,7 @@ resource "nomad_job" "backup-daily" {
   jobspec = templatefile("${path.module}/spec/backup.hcl", {
     backup_consul_script   = file("${path.module}/script/backup_consul.sh")
     backup_postgres_script = file("${path.module}/script/backup_postgres.sh")
+    backup_sqlite_script   = file("${path.module}/script/backup_sqlite.sh")
     policy                 = vault_policy.backup_policy.name
   })
   purge_on_destroy = true
