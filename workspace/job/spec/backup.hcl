@@ -133,6 +133,118 @@ EOH
     }
   }
 
+  group "mashu" {
+    volume "cifs" {
+      type      = "host"
+      source    = "cifs"
+      read_only = false
+    }
+
+    volume "host" {
+      type      = "host"
+      source    = "host"
+      read_only = true
+    }
+
+    constraint {
+      attribute = "$${attr.unique.hostname}"
+      value     = "2c"
+    }
+
+    network {
+      mode = "bridge"
+    }
+
+    service {
+      name = "backup-mashu-db"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "db-mashu"
+              local_bind_port  = 5432
+            }
+          }
+        }
+      }
+    }
+
+    task "backup-mashu-db" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = ["local/backup_postgres.sh"]
+      }
+
+      volume_mount {
+        volume      = "cifs"
+        destination = "/mnt/cifs"
+        read_only   = false
+      }
+
+      env {
+        PGHOST = "127.0.0.1"
+        PGPORT = 5432
+        PGUSER = "mashu"
+        name = "mashu"
+      }
+
+      template {
+        data = <<EOH
+${backup_postgres_script}
+EOH
+        destination   = "local/backup_postgres.sh"
+        change_mode   = "noop"
+      }
+
+      template {
+        data = <<EOH
+PGPASSWORD="{{with secret "database/data/mashu"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
+      }
+    }
+
+    task "backup-mashu-data" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = ["local/backup_directory.sh"]
+      }
+
+      volume_mount {
+        volume      = "cifs"
+        destination = "/mnt/cifs"
+        read_only   = false
+      }
+
+      volume_mount {
+        volume      = "host"
+        destination = "/mnt/host"
+        read_only   = true
+      }
+
+      env {
+        name = "mashu"
+        dir = "/mnt/host/mashu"
+      }
+
+      template {
+        data = <<EOH
+${backup_directory_script}
+EOH
+        destination   = "local/backup_directory.sh"
+        change_mode   = "noop"
+      }
+    }
+  }
+
   group "bulma" {
     volume "cifs" {
       type      = "host"
