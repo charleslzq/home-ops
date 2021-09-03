@@ -61,6 +61,7 @@ EOH
     }
   }
 
+  // manually install postgres-client on related machines
   group "odysseus" {
     volume "cifs" {
       type      = "host"
