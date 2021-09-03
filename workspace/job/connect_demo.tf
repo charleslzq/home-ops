@@ -1,5 +1,5 @@
 resource "nomad_job" "connect_demo" {
-  jobspec = <<EOH
+  jobspec          = <<EOH
 job "countdash" {
   datacenters = ["roger"]
 

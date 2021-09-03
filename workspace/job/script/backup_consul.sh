@@ -6,7 +6,7 @@ FILE=consul-$(date +%y%m%d%H%M%S).snap
 TARGET=/mnt/cifs/backup/consul
 if [ ! -f $TARGET ]
 then
-    mkdir -p $TARGET
+    sudo mkdir -p $TARGET
 fi
 
 consul snapshot save $FILE
