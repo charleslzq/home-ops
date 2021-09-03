@@ -43,8 +43,12 @@ job "mashu" {
         image = "vaultwarden/server:latest"
         ports = ["http"]
         volumes = [
-          "/opt/nomad/volume/db/mashu:/data",
+          "/opt/nomad/volume/mashu:/data",
         ]
+      }
+
+      env {
+        SIGNUPS_ALLOWED = false
       }
 
       template {
