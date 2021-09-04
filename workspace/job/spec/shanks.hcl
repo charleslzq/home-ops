@@ -42,6 +42,7 @@ job "shanks" {
       env {
         POSTGRES_USER = "shanks"
         POSTGRES_DB = "shanks"
+        OVERWRITEPROTOCOL = "https"
       }
 
       config {
