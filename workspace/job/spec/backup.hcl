@@ -298,4 +298,118 @@ EOH
       }
     }
   }
+
+  group "shanks" {
+    volume "cifs" {
+      type = "host"
+      source = "cifs"
+      read_only = false
+    }
+
+    volume "host" {
+      type = "host"
+      source = "host"
+      read_only = true
+    }
+
+    constraint {
+      attribute = "$${attr.unique.hostname}"
+      value = "shanks"
+    }
+
+    network {
+      mode = "bridge"
+    }
+
+    service {
+      name = "backup-shanks-db"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "db-shanks"
+              local_bind_port = 5432
+            }
+          }
+        }
+      }
+    }
+
+    task "backup-shanks-db" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = [
+          "local/backup_postgres.sh"]
+      }
+
+      volume_mount {
+        volume = "cifs"
+        destination = "/mnt/cifs"
+        read_only = false
+      }
+
+      env {
+        PGHOST = "127.0.0.1"
+        PGPORT = 5432
+        PGUSER = "shanks"
+        name = "shanks"
+      }
+
+      template {
+        data = <<EOH
+${backup_postgres_script}
+EOH
+        destination = "local/backup_postgres.sh"
+        change_mode = "noop"
+      }
+
+      template {
+        data = <<EOH
+PGPASSWORD="{{with secret "database/data/shanks"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env = true
+      }
+    }
+
+    task "backup-shanks-data" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = [
+          "local/backup_directory.sh"]
+      }
+
+      volume_mount {
+        volume = "cifs"
+        destination = "/mnt/cifs"
+        read_only = false
+      }
+
+      volume_mount {
+        volume = "host"
+        destination = "/mnt/host"
+        read_only = true
+      }
+
+      env {
+        name = "shanks"
+        dir = "/mnt/host/shanks/data"
+      }
+
+      template {
+        data = <<EOH
+${backup_directory_script}
+EOH
+        destination = "local/backup_directory.sh"
+        change_mode = "noop"
+      }
+    }
+  }
 }
