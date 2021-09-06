@@ -7,11 +7,6 @@ job "shouko" {
   }
 
   group "keycloak" {
-    constraint {
-      operator  = "distinct_hosts"
-      value     = "true"
-    }
-
     network {
       mode = "bridge"
       port "http" {
@@ -65,8 +60,8 @@ EOH
       }
 
       resources {
-        cpu    = 500
-        memory = 800
+        cpu    = 300
+        memory = 500
       }
     }
   }

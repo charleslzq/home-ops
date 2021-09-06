@@ -5,6 +5,9 @@ resource "vault_policy" "joker_policy" {
 path "https/data/me/zenq" {
   capabilities = ["read"]
 }
+path "oidc/shouko/data/yashin" {
+  capabilities = ["read"]
+}
 EOT
 }
 
@@ -50,7 +53,7 @@ data "local_file" "ca_file" {
 }
 
 resource "nomad_job" "joker" {
-  jobspec = templatefile("${path.module}/spec/traefik.hcl.tpl", {
+  jobspec = templatefile("${path.module}/spec/traefik.hcl", {
     traefik_version = "2.5.1"
     policy          = vault_policy.joker_policy.name
     ca              = data.local_file.ca_file.content

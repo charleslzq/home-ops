@@ -1,13 +1,16 @@
 job "joker" {
   datacenters = ["roger"]
   type        = "system"
+  constraint {
+    attribute = "$${meta.node_type}"
+    value     = "gateway"
+  }
+
+  vault {
+    policies = ["${policy}"]
+  }
 
   group "traefik" {
-    constraint {
-      attribute = "$${meta.node_type}"
-      value     = "gateway"
-    }
-
     network {
       port "http" {
         static = 8080
@@ -20,7 +23,13 @@ job "joker" {
 
     service {
       name = "joker"
-      tags = ["traefik.enable=true"]
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.middlewares.yashin.forwardauth.address=http://localhost:4181",
+        "traefik.http.middlewares.yashin.forwardauth.trustForwardHeader=true",
+        "traefik.http.middlewares.yashin.forwardauth.authResponseHeaders=X-Forwarded-User, X-Auth-User, X-WebAuth-Us",
+        "traefik.http.routers.joker.middlewares=yashin"
+      ]
 
       port = "http"
 
@@ -44,10 +53,6 @@ job "joker" {
           "local/config.yml:/etc/traefik/config/config.yml",
           "secrets/https:/etc/traefik/https",
         ]
-      }
-
-      vault {
-        policies = ["${policy}"]
       }
 
       template {
@@ -171,6 +176,58 @@ EOF
 ${ca}
 EOF
         destination = "secrets/https/ca.crt"
+      }
+    }
+  }
+
+  group "yashin" {
+    network {
+      port "http" {
+        static = 4181
+      }
+    }
+
+    service {
+      name = "yashin"
+      tags = ["traefik.enable=true"]
+
+      port = "http"
+
+      check {
+        name     = "alive"
+        type     = "tcp"
+        port     = "http"
+        interval = "10s"
+        timeout  = "2s"
+      }
+    }
+
+    task "traefik-forward-auth" {
+      driver = "docker"
+
+      env {
+        DEFAULT_PROVIDER = "generic-oauth"
+        PROVIDERS_GENERIC_OAUTH_AUTH_URL = "https://shouko.zenq.me/auth/realms/master/protocol/openid-connect/auth"
+        PROVIDERS_GENERIC_OAUTH_TOKEN_URL = "https://shouko.zenq.me/auth/realms/master/protocol/openid-connect/token"
+        PROVIDERS_GENERIC_OAUTH_USER_URL = "https://shouko.zenq.me/auth/realms/master/protocol/openid-connect/userinfo"
+        PROVIDERS_GENERIC_OAUTH_CLIENT_ID = "yashin"
+        AUTH_HOST = "yashin.zenq.me"
+        COOKIE_DOMAIN = "zenq.me"
+      }
+
+      config {
+        image = "thomseddon/traefik-forward-auth"
+        network_mode = "host"
+        ports = ["http"]
+      }
+
+      template {
+        data = <<EOH
+PROVIDERS_GENERIC_OAUTH_CLIENT_SECRET="{{with secret "oidc/shouko/data/yashin"}}{{.Data.data.clientSecret}}{{end}}"
+SECRET="{{with secret "oidc/shouko/data/yashin"}}{{.Data.data.secret}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
       }
     }
   }
