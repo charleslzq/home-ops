@@ -70,8 +70,8 @@ EOH
     }
 
     constraint {
-      attribute = "$${meta.node_type}"
-      value     = "dns"
+      attribute = "$${attr.unique.hostname}"
+      value     = "2c"
     }
 
     network {
@@ -421,8 +421,8 @@ EOH
     }
 
     constraint {
-      attribute = "$${meta.node_type}"
-      value     = "dns"
+      attribute = "$${attr.unique.hostname}"
+      value     = "2c"
     }
 
     network {
@@ -492,8 +492,8 @@ EOH
     }
 
     constraint {
-      attribute = "$${meta.node_type}"
-      value     = "dns"
+      attribute = "$${attr.unique.hostname}"
+      value     = "2c"
     }
 
     network {
