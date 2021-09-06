@@ -17,6 +17,9 @@ path "database/data/shanks" {
 path "database/data/shouko" {
   capabilities = ["read"]
 }
+path "database/data/riza" {
+  capabilities = ["read"]
+}
 EOT
 }
 
