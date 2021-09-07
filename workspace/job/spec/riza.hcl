@@ -30,6 +30,10 @@ job "riza" {
               destination_name = "mercury-riza"
               local_bind_port = 3000
             }
+            upstreams {
+              destination_name = "violet"
+              local_bind_port = 8123
+            }
           }
         }
       }
@@ -46,6 +50,7 @@ job "riza" {
         DB_PORT = 5432
         DB_USER = "riza"
         DB_NAME = "riza"
+        HTTP_PROXY = "127.0.0.1:8123"
       }
 
       config {
