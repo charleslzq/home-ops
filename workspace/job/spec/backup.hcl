@@ -599,4 +599,127 @@ EOH
       }
     }
   }
+
+  group "darjeeling" {
+    volume "cifs" {
+      type      = "host"
+      source    = "cifs"
+      read_only = false
+    }
+
+    volume "host" {
+      type      = "host"
+      source    = "host"
+      read_only = true
+    }
+
+    constraint {
+      attribute = "$${attr.unique.hostname}"
+      value     = "1d"
+    }
+
+    network {
+      mode = "bridge"
+    }
+
+    service {
+      name = "backup-darjeeling-db"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "db-darjeeling"
+              local_bind_port  = 5432
+            }
+          }
+        }
+      }
+    }
+
+    task "backup-darjeeling-db" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = ["local/backup_postgres.sh"]
+      }
+
+      volume_mount {
+        volume      = "cifs"
+        destination = "/mnt/cifs"
+        read_only   = false
+      }
+
+      env {
+        PGHOST = "127.0.0.1"
+        PGPORT = 5432
+        PGUSER = "darjeeling"
+        name = "darjeeling"
+      }
+
+      template {
+        data = <<EOH
+${backup_postgres_script}
+EOH
+        destination   = "local/backup_postgres.sh"
+        change_mode   = "noop"
+      }
+
+      template {
+        data = <<EOH
+PGPASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end}}"
+EOH
+        destination = "secrets/db.env"
+        env         = true
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
+      }
+    }
+
+    task "backup-darjeeling-data" {
+      driver = "exec"
+      user = "ubuntu"
+
+      config {
+        command = "/bin/bash"
+        args = [
+          "local/backup_directory.sh"]
+      }
+
+      volume_mount {
+        volume = "cifs"
+        destination = "/mnt/cifs"
+        read_only = false
+      }
+
+      volume_mount {
+        volume = "host"
+        destination = "/mnt/host"
+        read_only = true
+      }
+
+      env {
+        name = "darjeeling"
+        dir = "/mnt/host/darjeeling/data"
+      }
+
+      template {
+        data = <<EOH
+${backup_directory_script}
+EOH
+        destination = "local/backup_directory.sh"
+        change_mode = "noop"
+      }
+
+      resources {
+        cpu = 500
+        memory = 100
+      }
+    }
+  }
 }
