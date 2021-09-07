@@ -65,6 +65,11 @@ EOH
         destination = "secrets/db.env"
         env         = true
       }
+
+      resources {
+        cpu = 300
+        memory = 200
+      }
     }
   }
 
@@ -92,6 +97,11 @@ EOH
       config {
         image = "wangqiru/mercury-parser-api:latest"
         ports = ["http"]
+      }
+
+      resources {
+        cpu = 100
+        memory = 200
       }
     }
   }
@@ -141,6 +151,11 @@ POSTGRES_PASSWORD="{{with secret "database/data/riza"}}{{.Data.data.password}}{{
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }

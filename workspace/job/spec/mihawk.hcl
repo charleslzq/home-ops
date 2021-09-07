@@ -53,7 +53,10 @@ EOH
           prometheus_ui = 9090
         }
       }
+
       resources {
+        cpu = 100
+        memory = 100
         network {
           mbits = 10
           port "prometheus_ui" {}

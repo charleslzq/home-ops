@@ -72,6 +72,11 @@ address=/.zenq.me/10.10.30.110
 EOH
         destination = "local/dnsmasq.conf"
       }
+
+      resources {
+        cpu = 300
+        memory = 200
+      }
     }
   }
 }

@@ -30,6 +30,11 @@ job "violet" {
           "dnsNameServer=10.10.30.235",
         ]
       }
+
+      resources {
+        cpu = 50
+        memory = 10
+      }
     }
   }
 }

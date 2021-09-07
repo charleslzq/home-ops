@@ -60,6 +60,11 @@ EOH
         destination = "secrets/db.env"
         env         = true
       }
+
+      resources {
+        cpu = 1000
+        memory = 1024
+      }
     }
   }
 

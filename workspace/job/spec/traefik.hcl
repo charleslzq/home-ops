@@ -177,6 +177,11 @@ ${ca}
 EOF
         destination = "secrets/https/ca.crt"
       }
+
+      resources {
+        cpu = 500
+        memory = 100
+      }
     }
   }
 
@@ -228,6 +233,11 @@ SECRET="{{with secret "oidc/shouko/data/yashin"}}{{.Data.data.secret}}{{end}}"
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+
+      resources {
+        cpu = 50
+        memory = 10
       }
     }
   }

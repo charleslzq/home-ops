@@ -58,6 +58,11 @@ EOH
         max_files     = 3
         max_file_size = 10
       }
+
+      resources {
+        cpu = 100
+        memory = 50
+      }
     }
   }
 
@@ -129,6 +134,11 @@ PGPASSWORD="{{with secret "database/data/odysseus"}}{{.Data.data.password}}{{end
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }
@@ -207,6 +217,11 @@ EOH
         destination = "secrets/db.env"
         env         = true
       }
+
+      resources {
+        cpu = 100
+        memory = 50
+      }
     }
 
     task "backup-mashu-data" {
@@ -241,6 +256,11 @@ ${backup_directory_script}
 EOH
         destination   = "local/backup_directory.sh"
         change_mode   = "noop"
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }
@@ -295,6 +315,11 @@ ${backup_sqlite_script}
 EOH
         destination   = "local/backup_sqlite.sh"
         change_mode   = "noop"
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }
@@ -374,6 +399,11 @@ EOH
         destination = "secrets/db.env"
         env = true
       }
+
+      resources {
+        cpu = 200
+        memory = 100
+      }
     }
 
     task "backup-shanks-data" {
@@ -409,6 +439,11 @@ ${backup_directory_script}
 EOH
         destination = "local/backup_directory.sh"
         change_mode = "noop"
+      }
+
+      resources {
+        cpu = 2000
+        memory = 100
       }
     }
   }
@@ -481,6 +516,11 @@ EOH
         destination = "secrets/db.env"
         env         = true
       }
+
+      resources {
+        cpu = 100
+        memory = 50
+      }
     }
   }
 
@@ -551,6 +591,11 @@ PGPASSWORD="{{with secret "database/data/riza"}}{{.Data.data.password}}{{end}}"
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }

@@ -59,6 +59,11 @@ EOH
         destination = "secrets/db.env"
         env         = true
       }
+
+      resources {
+        cpu = 100
+        memory = 100
+      }
     }
   }
 
@@ -107,6 +112,11 @@ POSTGRES_PASSWORD="{{with secret "database/data/mashu"}}{{.Data.data.password}}{
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }

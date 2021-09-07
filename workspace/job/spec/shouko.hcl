@@ -61,7 +61,7 @@ EOH
 
       resources {
         cpu    = 300
-        memory = 500
+        memory = 768
       }
     }
   }
@@ -111,6 +111,11 @@ POSTGRES_PASSWORD="{{with secret "database/data/shouko"}}{{.Data.data.password}}
 EOH
         destination = "secrets/db.env"
         env         = true
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
       }
     }
   }
