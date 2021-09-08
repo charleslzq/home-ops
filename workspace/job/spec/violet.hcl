@@ -33,7 +33,7 @@ job "violet" {
 
       resources {
         cpu = 50
-        memory = 10
+        memory = 50
       }
     }
   }
