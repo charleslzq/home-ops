@@ -47,8 +47,11 @@ job "haruka" {
       }
 
       env {
+        PGID = 1000
+        PUID = 1000
         TZ = "Asia/Shanghai"
         APP_NAME = "Haruka"
+        APP_URL = "https://haruka.zenq.me"
       }
 
       resources {
