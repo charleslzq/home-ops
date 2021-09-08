@@ -46,6 +46,11 @@ job "haruka" {
         ]
       }
 
+      env {
+        TZ = "Asia/Shanghai"
+        APP_NAME = "Haruka"
+      }
+
       resources {
         cpu    = 100
         memory = 128
