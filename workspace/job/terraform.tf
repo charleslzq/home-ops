@@ -7,8 +7,6 @@ terraform {
   }
 }
 
-provider "consul" {}
-
 provider "vault" {
   address         = "https://10.10.30.121:8200"
 }
