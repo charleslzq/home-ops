@@ -25,12 +25,12 @@ template {
   source      = "/opt/consul/templates/agent.key.tpl"
   destination = "/opt/consul/agent-certs/agent.key"
   perms       = 0755
-  command     = "systemctl restart consul"
+  command     = "systemctl reload consul"
 }
 
 template {
   source      = "/opt/consul/templates/ca.crt.tpl"
   destination = "/opt/consul/agent-certs/ca.crt"
   perms       = 0755
-  command     = "systemctl restart consul"
+  command     = "systemctl reload consul"
 }
