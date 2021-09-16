@@ -7,4 +7,6 @@ Vagrant.configure("2") do |config|
     create: true, owner: "vagrant", group: "vagrant"
   config.vm.network "forwarded_port", guest: 8500, host: 8500
   config.vm.network "forwarded_port", guest: 8200, host: 8200
+
+  config.vm.provision "shell", path: "scripts/provision.sh"
 end
