@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "vault" {
-  address         = "https://10.10.30.121:8200"
+  address = "https://10.10.30.121:8200"
 }
 
 data "vault_generic_secret" "consul_role" {

@@ -1,5 +1,7 @@
 consul-backup/*
-!consul-backup/.gitkeep0
+!consul-backup/.gitkeep
+workspace/generated/*
+!workspace/generated/.gitkeep
 
 .vagrant
 .terraform
