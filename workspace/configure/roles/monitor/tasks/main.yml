@@ -4,6 +4,13 @@
     name:
       - docker
     state: latest
+- name: Create target directory
+  file: path=/etc/loki state=directory mode=0755
+- name: Configure | Source loki main conf
+  template:
+    src: loki.yaml.j2
+    dest: /etc/loki/loki.yaml
+    mode: 0644
 - name: Run Loki
   docker_container:
     name: loki
@@ -11,3 +18,7 @@
     state: started
     published_ports:
       - "0.0.0.0:3100:3100"
+    volumes:
+      - "/etc/loki:/mnt/config"
+    command:
+      - "-config.file=/mnt/config/loki.yaml"
