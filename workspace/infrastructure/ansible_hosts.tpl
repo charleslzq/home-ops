@@ -30,6 +30,10 @@
 %{ for relay in relays }${relay.ip}
 %{ endfor }
 
+[monitor]
+%{ for monitor in monitors }${monitor.ip}
+%{ endfor }
+
 [nomad_client:children]
 gateway
 dns_server
@@ -40,6 +44,15 @@ nas
 vault
 nomad_server
 nomad_client
+
+[hashi_server:children]
+consul_server
+vault
+nomad_server
+
+[hashi:children]
+consul_client
+consul_server
 
 [all:vars]
 ansible_ssh_user=ubuntu

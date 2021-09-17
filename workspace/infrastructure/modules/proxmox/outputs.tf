@@ -23,12 +23,13 @@ output "workers" {
 }
 
 output "nas" {
-  value = [{
-    ip   = "10.10.30.180"
-    name = "shanks"
-  }]
+  value = local.nas
 }
 
 output "relays" {
   value = local.relays
+}
+
+output "monitors" {
+  value = local.monitors
 }

@@ -23,5 +23,6 @@ resource "local_file" "ansible_hosts" {
     nas_servers    = module.proxmox.nas
     workers        = module.proxmox.workers
     relays         = module.proxmox.relays
+    monitors       = module.proxmox.monitors
   })
 }
