@@ -3,5 +3,4 @@
   hosts: "monitor"
   become: true
   roles:
-    - role: docker
-      tags: ["docker"]
+    - role: monitor

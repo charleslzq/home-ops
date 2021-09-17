@@ -1,0 +1,13 @@
+---
+- name: Install docker sdk
+  pip:
+    name:
+      - docker
+    state: latest
+- name: Run Loki
+  docker_container:
+    name: loki
+    image: grafana/loki:master
+    state: started
+    published_ports:
+      - "0.0.0.0:3100:3100"
