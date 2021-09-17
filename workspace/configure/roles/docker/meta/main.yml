@@ -1,0 +1,9 @@
+---
+dependencies:
+  - role: 'nickjj.docker'
+    docker__edition: "ce"
+    docker__channel: [ "stable" ]
+    docker__version: ""
+    docker__state: "latest"
+    docker__compose_version: ""
+    docker__users: [ "{{ ansible_env.SUDO_USER | d('root') }}" ]

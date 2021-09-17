@@ -1,0 +1,5 @@
+---
+roles:
+  - name: nickjj.docker
+    src: https://github.com/nickjj/ansible-docker
+    version: v2.1.0

@@ -1,0 +1,7 @@
+---
+- name: monitor
+  hosts: "monitor"
+  become: true
+  roles:
+    - role: docker
+      tags: ["docker"]
