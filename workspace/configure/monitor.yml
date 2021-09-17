@@ -4,3 +4,8 @@
   become: true
   roles:
     - role: monitor
+- name: monitored
+  hosts: "gateway"
+  become: true
+  roles:
+    - role: monitored

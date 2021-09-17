@@ -1,0 +1,21 @@
+[SERVICE]
+    Log_Level info
+[INPUT]
+    Name              forward
+    Listen            127.0.0.1
+    Port              24224
+    Buffer_Chunk_Size 1M
+    Buffer_Max_Size   6M
+[INPUT]
+    Name            systemd
+    Tag             *
+    Path            /var/log/journal
+    Systemd_Filter    _SYSTEMD_UNIT=consul.service
+    Systemd_Filter    _SYSTEMD_UNIT=nomad.service
+    Systemd_Filter    _SYSTEMD_UNIT=consul_template.service
+    Systemd_Filter    _SYSTEMD_UNIT=vault.service
+[Output]
+    Name loki
+    Match *
+    host 10.10.30.125
+    line_format json
