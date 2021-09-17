@@ -5,7 +5,7 @@
   roles:
     - role: monitor
 - name: monitored
-  hosts: "gateway"
+  hosts: "hashi"
   become: true
   roles:
     - role: monitored
