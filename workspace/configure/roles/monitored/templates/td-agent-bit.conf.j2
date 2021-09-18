@@ -12,4 +12,5 @@
     Name loki
     Match *
     host 10.10.30.125
+    labels job=$SYSLOG_IDENTIFIER, node=$_HOSTNAME
     line_format json
