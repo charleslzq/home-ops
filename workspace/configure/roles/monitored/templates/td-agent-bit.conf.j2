@@ -1,12 +1,6 @@
 [SERVICE]
     Log_Level info
 [INPUT]
-    Name              forward
-    Listen            127.0.0.1
-    Port              24224
-    Buffer_Chunk_Size 1M
-    Buffer_Max_Size   6M
-[INPUT]
     Name            systemd
     Tag             *
     Path            /var/log/journal
