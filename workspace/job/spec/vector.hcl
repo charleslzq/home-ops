@@ -41,8 +41,8 @@ job "vector" {
       }
       # resource limits are a good idea because you don't want your log collection to consume all resources available
       resources {
-        cpu    = 500 # 500 MHz
-        memory = 256 # 256MB
+        cpu    = 100
+        memory = 64
       }
       # template with Vector's configuration
       template {
