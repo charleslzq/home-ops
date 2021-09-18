@@ -4,14 +4,14 @@
     name:
       - docker
     state: latest
-- name: Create target directory
+- name: Loki | Create target directory
   file: path=/etc/loki state=directory mode=0755
-- name: Configure | Source loki main conf
+- name: Loki | Main conf
   template:
     src: loki.yaml.j2
     dest: /etc/loki/loki.yaml
     mode: 0644
-- name: Run Loki
+- name: Loki | Run
   docker_container:
     name: loki
     image: grafana/loki:master
@@ -22,3 +22,22 @@
       - "/etc/loki:/mnt/config"
     command:
       - "-config.file=/mnt/config/loki.yaml"
+- name: Prometheus | Create target directory
+  file: path=/etc/prometheus state=directory mode=0755
+- name: Prometheus | Main conf
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    mode: 0644
+- name: Prometheus | Run
+  docker_container:
+    name: prometheus
+    image: prom/prometheus:latest
+    state: started
+    published_ports:
+      - "0.0.0.0:9090:9090"
+    volumes:
+      - "/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+    command:
+      - "--storage.tsdb.retention.size=5GB"
+      - "--config.file=/etc/prometheus/prometheus.yml"

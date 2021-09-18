@@ -1,0 +1,17 @@
+global:
+  scrape_interval:     5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'nomad_metrics'
+    consul_sd_configs:
+      - server: 'http://10.10.30.99:8500'
+        services: ['nomad-client', 'nomad']
+        token: {{ consul_token }}
+    relabel_configs:
+      - source_labels: ['__meta_consul_tags']
+        regex: '(.*)http(.*)'
+        action: keep
+    metrics_path: /v1/metrics
+    params:
+      format: ['prometheus']
