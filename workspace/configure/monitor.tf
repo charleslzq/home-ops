@@ -30,6 +30,6 @@ resource "null_resource" "prometheus" {
     environment = {
       PROMETHEUS_CONSUL_TOKEN = data.consul_acl_token_secret_id.prometheus.secret_id
     }
-    command = "ansible-playbook T_monitor.yml"
+    command = "ansible-playbook _monitor.yml"
   }
 }

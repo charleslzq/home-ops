@@ -1,24 +1,26 @@
 ---
-- name: Add fluent-bit apt key
-  apt_key:
-    url: https://packages.fluentbit.io/fluentbit.key
-    state: present
-- name: Add fluent-bit repository
-  apt_repository:
-    repo: 'deb https://packages.fluentbit.io/ubuntu/focal focal main'
-    state: present
-    filename: td-agent-bit
-    update_cache: true
-- name: Install fluentbit package
+- include: add_repo.yml
+  when:
+    - add_repo is defined
+    - add_repo == true
+- name: Vector | Install Package
   package:
-    name: td-agent-bit
-    state: present
+    name: vector
+    state: latest
     update_cache: true
-  notify: Restart Fluentbit service
   tags: ['install']
-- name: Configure | Source td-agent-bit main conf
+  notify: Restart Vector service
+- name: Vector | Configuration | Create target directory
+  file:
+    path: /etc/vector
+    state: directory
+    mode: 0755
+- name: Vector | Configuration | Generate Configuration
   template:
-    src: td-agent-bit.conf.j2
-    dest: /etc/td-agent-bit/td-agent-bit.conf
+    src: vector.toml.j2
+    dest: /etc/vector/vector.toml
     mode: 0644
-  notify: Restart Fluentbit service
+  notify: Restart Vector service
+- include: docker_permission.yml
+  when:
+    - use_docker == true

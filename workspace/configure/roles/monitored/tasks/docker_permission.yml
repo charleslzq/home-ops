@@ -1,0 +1,7 @@
+---
+- name: Vector | Configuration | Docker Premission
+  user:
+    name: vector
+    groups: docker
+    append: yes
+  notify: Restart Vector service

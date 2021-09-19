@@ -2,9 +2,9 @@
 ---
 # handlers file for ansible-role-fluentbit
 
-- name: Restart Fluentbit service
+- name: Restart Vector service
   service:
-    name: td-agent-bit
+    name: vector
     enabled: true
     state: restarted
   become: true

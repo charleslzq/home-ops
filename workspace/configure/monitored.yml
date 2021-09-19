@@ -1,0 +1,16 @@
+---
+- name: monitored_hashi_server
+  hosts: "hashi_server"
+  become: true
+  roles:
+    - role: monitored
+  vars:
+    use_docker: false
+- name: monitored_nomad_clients
+  hosts: "nomad_client"
+  become: true
+  roles:
+    - role: monitored
+  vars:
+#    add_repo: true
+    use_docker: true

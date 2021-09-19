@@ -6,8 +6,3 @@
     - role: monitor
   vars:
     consul_token: "{{ lookup('env', 'PROMETHEUS_CONSUL_TOKEN') }}"
-- name: monitored
-  hosts: "hashi"
-  become: true
-  roles:
-    - role: monitored

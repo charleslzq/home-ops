@@ -1,0 +1,47 @@
+data_dir = "/var/lib/vector/"
+[api]
+enabled = true
+address = "0.0.0.0:8686"
+playground = true
+[sources.journald]
+type = "journald"
+current_boot_only = true
+include_units = [ "consul", "consul_template", "vault", "nomad" ]
+{% if use_docker %}
+[sources.docker_logs]
+type = "docker_logs"
+{% endif %}
+{% if use_docker %}
+[sinks.loki_docker]
+type = "loki"
+inputs = ["docker_logs"]
+endpoint = "http://10.10.30.125:3100"
+encoding.codec = "json"
+healthcheck.enabled = true
+# since . is used by Vector to denote a parent-child relationship, and Nomad's Docker labels contain ".",
+# we need to escape them twice, once for TOML, once for Vector
+labels.agent = "vector"
+labels.alloc_id = {% raw %}"{{ label.com\\.hashicorp\\.nomad\\.alloc_id }}"
+{% endraw %}
+labels.job = {% raw %}"{{ label.com\\.hashicorp\\.nomad\\.job_name }}"
+{% endraw %}
+labels.task = {% raw %}"{{ label.com\\.hashicorp\\.nomad\\.task_name }}"
+{% endraw %}
+labels.group = {% raw %}"{{ label.com\\.hashicorp\\.nomad\\.task_group_name }}"
+{% endraw %}
+labels.namespace = {% raw %}"{{ label.com\\.hashicorp\\.nomad\\.namespace }}"
+{% endraw %}
+labels.node = {% raw %}"{{ label.com\\.hashicorp\\.nomad\\.node_name }}"
+{% endraw %}
+# remove fields that have been converted to labels to avoid having the field twice
+# remove_label_fields = true
+{% endif %}
+[sinks.loki_journal]
+type = "loki"
+inputs = ["journald"]
+endpoint = "http://10.10.30.125:3100"
+encoding.codec = "json"
+healthcheck.enabled = true
+labels.agent = "vector"
+# remove fields that have been converted to labels to avoid having the field twice
+# remove_label_fields = true
