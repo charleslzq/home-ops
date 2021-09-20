@@ -25,7 +25,7 @@
   template:
     src: consul.hcl.j2
     dest: /etc/consul.d/50.telemetry.hcl
-    mode: 9644
+    mode: 0644
   notify: Restart Consul Service
 - include: docker_permission.yml
   when:

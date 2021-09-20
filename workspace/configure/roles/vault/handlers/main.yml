@@ -1,0 +1,10 @@
+
+---
+# handlers file for ansible-role-fluentbit
+
+- name: Restart Vault Service
+  service:
+    name: vault
+    enabled: true
+    state: restarted
+  become: true

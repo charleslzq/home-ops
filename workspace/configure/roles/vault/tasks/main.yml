@@ -1,0 +1,6 @@
+- name: Vault | Configuration | Telemetry
+  template:
+    src: telemetry.hcl.j2
+    dest: /etc/vault.d/50.telemetry.hcl
+    mode: 0644
+  notify: Restart Vault Service

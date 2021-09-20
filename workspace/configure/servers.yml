@@ -1,0 +1,6 @@
+---
+- name: vaults
+  hosts: "vault"
+  become: true
+  roles:
+    - role: vault

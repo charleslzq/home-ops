@@ -7,3 +7,4 @@
   vars:
     consul_token: "{{ lookup('env', 'PROMETHEUS_CONSUL_TOKEN') }}"
     consul_ips: "{{ lookup('env', 'PROMETHEUS_CONSUL_IPS') | from_json }}"
+    vault_token: "{{ lookup('env', 'PROMETHEUS_VAULT_TOKEN') }}"
