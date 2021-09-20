@@ -4,6 +4,9 @@ global:
 
 scrape_configs:
   - job_name: 'nomad_metrics'
+    metrics_path: /v1/metrics
+    params:
+      format: ['prometheus']
     consul_sd_configs:
       - server: 'http://10.10.30.99:8500'
         services: ['nomad-client', 'nomad']
@@ -12,6 +15,12 @@ scrape_configs:
       - source_labels: ['__meta_consul_tags']
         regex: '(.*)http(.*)'
         action: keep
-    metrics_path: /v1/metrics
+  - job_name: 'consul_metrics'
+    metrics_path: 'v1/agent/metrics'
     params:
       format: ['prometheus']
+    bearer_token: {{ consul_token }}
+    static_configs:
+      - targets:
+          {% for ip in consul_ips %}- '{{ ip }}:8500'
+          {% endfor %}

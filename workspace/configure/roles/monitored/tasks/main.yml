@@ -21,6 +21,12 @@
     dest: /etc/vector/vector.toml
     mode: 0644
   notify: Restart Vector service
+- name: Consul | Configuration | Telemetry Configuration
+  template:
+    src: consul.hcl.j2
+    dest: /etc/consul.d/50.telemetry.hcl
+    mode: 9644
+  notify: Restart Consul Service
 - include: docker_permission.yml
   when:
     - use_docker == true

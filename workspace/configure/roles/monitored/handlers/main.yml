@@ -8,3 +8,9 @@
     enabled: true
     state: restarted
   become: true
+- name: Restart Consul Service
+  service:
+    name: consul
+    enabled: true
+    state: restarted
+  become: true
