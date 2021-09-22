@@ -1,0 +1,13 @@
+---
+- name: CA | Create Target Directory
+  file:
+    path: /usr/local/share/ca-certificates/extra/
+    state: directory
+    mode: 0755
+- name: CA | Upload
+  copy:
+    src: /usr/local/share/ca-certificates/extra/ca.crt
+    dest: /usr/local/share/ca-certificates/extra/ca.crt
+    mode: '0644'
+- name: CA | Update
+  command: update-ca-certificates

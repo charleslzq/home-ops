@@ -38,6 +38,7 @@
       - "0.0.0.0:9090:9090"
     volumes:
       - "/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "/usr/local/share/ca-certificates/extra/ca.crt:/usr/local/share/ca-certificates/extra/ca.crt"
     command:
       - "--storage.tsdb.retention.size=5GB"
       - "--config.file=/etc/prometheus/prometheus.yml"

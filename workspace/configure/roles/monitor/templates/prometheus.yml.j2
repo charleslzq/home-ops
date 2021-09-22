@@ -15,6 +15,17 @@ scrape_configs:
       - source_labels: ['__meta_consul_tags']
         regex: '(.*)http(.*)'
         action: keep
+  - job_name: 'vault_metrics'
+    metrics_path: "/v1/sys/metrics"
+    params:
+      format: ['prometheus']
+    scheme: https
+    tls_config:
+      ca_file: /usr/local/share/ca-certificates/extra/ca.crt
+    bearer_token: {{ vault_token }}
+    static_configs:
+      - targets:
+          - '10.10.30.120:8200'
   - job_name: 'consul_metrics'
     metrics_path: 'v1/agent/metrics'
     params:
@@ -24,14 +35,3 @@ scrape_configs:
       - targets:
           {% for ip in consul_ips %}- '{{ ip }}:8500'
           {% endfor %}
-  - job_name: 'vault_metrics'
-    metrics_path: "/v1/sys/metrics"
-    params:
-      format: ['prometheus']
-    scheme: https
-    tls_config:
-      insecure_skip_verify: true
-    bearer_token: {{ vault_token }}
-    static_configs:
-      - targets:
-          - '10.10.30.120:8200'

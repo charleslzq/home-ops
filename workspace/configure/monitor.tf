@@ -29,7 +29,7 @@ resource "vault_policy" "prometheus_policy" {
   name = "prometheus_policy"
 
   policy = <<EOT
-path "/v1/sys/metrics" {
+path "sys/metrics" {
   capabilities = ["read", "list"]
 }
 EOT
