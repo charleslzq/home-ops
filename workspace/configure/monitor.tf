@@ -1,7 +1,7 @@
 resource "consul_acl_policy" "prometheus" {
   name  = "prometheus"
   rules = <<-RULE
-service_prefix "" {
+service_prefix "nomad" {
   policy = "read"
 }
 

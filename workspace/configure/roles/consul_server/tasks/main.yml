@@ -1,0 +1,7 @@
+---
+- name: Consul | Configuration | Telemetry Configuration
+  template:
+    src: telemetry.hcl.j2
+    dest: /etc/consul.d/50.telemetry.hcl
+    mode: 0644
+  notify: Restart Consul Service

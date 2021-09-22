@@ -4,3 +4,8 @@
   become: true
   roles:
     - role: vault
+- name: consul servers
+  hosts: "consul_server"
+  become: true
+  roles:
+    - role: consul_server
