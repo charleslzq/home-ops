@@ -2854,4 +2854,43 @@ EOH
       }
     }
   }
+
+  group "synapse-ui" {
+    network {
+      mode = "bridge"
+      port "http" {
+        to = 80
+      }
+    }
+    service {
+      name = "robin-admin"
+      tags = ["traefik.enable=true"]
+      port = "http"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "robin"
+              local_bind_port  = 8008
+            }
+          }
+        }
+      }
+    }
+
+    task "synapse-ui" {
+      driver = "docker"
+
+      config {
+        image = "awesometechnologies/synapse-admin"
+        ports = ["http"]
+      }
+
+      resources {
+        cpu = 100
+        memory = 50
+      }
+    }
+  }
 }
