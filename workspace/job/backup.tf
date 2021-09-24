@@ -23,6 +23,9 @@ path "database/data/riza" {
 path "database/data/darjeeling" {
   capabilities = ["read"]
 }
+path "database/data/robin" {
+  capabilities = ["read"]
+}
 EOT
 }
 
