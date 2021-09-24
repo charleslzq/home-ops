@@ -10,3 +10,4 @@ workspace/generated/*
 .idea
 generated
 *.tfstate
+.DS_Store
