@@ -83,7 +83,7 @@ EOH
       driver = "docker"
 
       config {
-        image = "postgres:latest"
+        image = "postgres:13"
         ports = ["db"]
         volumes = [
           "/opt/nomad/volume/db/odysseus:/var/lib/postgresql/data",

@@ -96,7 +96,7 @@ EOH
       driver = "docker"
 
       config {
-        image = "postgres:latest"
+        image = "postgres:13"
         ports = ["db"]
         volumes = [
           "/opt/nomad/volume/mashu/db:/var/lib/postgresql/data",
