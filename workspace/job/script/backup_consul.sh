@@ -2,8 +2,9 @@
 
 set -e
 
+DAY=$(date +%y%m%d)
 FILE=consul-$(date +%y%m%d%H%M%S).snap
-TARGET=/mnt/cifs/backup/consul
+TARGET=/mnt/cifs/backup/$DAY/consul
 if [ ! -f $TARGET ]
 then
     sudo mkdir -p $TARGET

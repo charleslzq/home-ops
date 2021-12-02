@@ -2,8 +2,9 @@
 
 set -e
 
+DAY=$(date +%y%m%d)
 FILE=${name}-dump-$(date +%y%m%d%H%M%S).sqlite
-TARGET=/mnt/cifs/backup/${name}/db
+TARGET=/mnt/cifs/backup/$DAY/${name}/db
 if [ ! -f $TARGET ]
 then
     sudo mkdir -p $TARGET
