@@ -11,6 +11,18 @@ job "kouko" {
       attribute = "$${attr.unique.hostname}"
       value     = "shanks"
     }
+    restart {
+      attempts = 15
+      delay    = "30s"
+    }
+    reschedule {
+      attempts       = 15
+      interval       = "10m"
+      delay          = "5s"
+      delay_function = "exponential"
+      max_delay      = "30s"
+      unlimited      = false
+    }
     network {
       port "http" {
         to = 2342
@@ -39,14 +51,15 @@ job "kouko" {
         ports = ["http"]
         volumes = [
           "/opt/nomad/volume/kouko/data:/photoprism/storage",
+          "/opt/nomad/volume/shanks/data/data/charleslzq/files/Photos:/photoprism/originals",
         ]
         security_opt = [
           "seccomp=unconfined",
           "apparmor=unconfined",
         ]
-        dns_servers = [
-          "10.10.30.235"
-        ]
+#        dns_servers = [
+#          "10.10.30.235"
+#        ]
       }
 
       env {
@@ -79,6 +92,7 @@ job "kouko" {
         PHOTOPRISM_SITE_TITLE = "Kouko"
         PHOTOPRISM_SITE_CAPTION = "Kouko"
         PHOTOPRISM_SITE_AUTHOR = "charleslzq"
+        PHOTOPRISM_WORKERS = 1
       }
 
       template {
@@ -90,8 +104,8 @@ EOH
       }
 
       resources {
-        cpu = 500
-        memory = 300
+        cpu = 5000
+        memory = 1500
       }
     }
 
